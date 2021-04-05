@@ -5,21 +5,27 @@
 <meta charset = "UTF-8">
 <title> YouMusic </title>
 <style>
-h1 {text-align : center;font-size: 60px;}
-div{text-align : center;font-size: 35px;}
+h1 {text-align : center;font-size: 40px;}
 </style>
 </head>
 
 <body>
 	<h1> Welcome in YouMusic </h1>
 	
-	<div> 
-		<a href:"login">Login Page</a>
-	</div>
+	<form action="login" method="POST">
+		<label for="user">UserName:</label>
+		<input type="text" id="user" name="user" required><br><br>
+		
+		<label for="password">Password:</label>
+		<input type="text" id="password" name="password" required><br><br>
+		
+		<input type="submit" value="submit">		
+	</form>
+	
 	<br>
 	<br>
 	<div>
-		<a href:"registration"> Registration Page</a>
+		<a href="registration.html"> Registration Page</a>
 	</div>
 	
 
