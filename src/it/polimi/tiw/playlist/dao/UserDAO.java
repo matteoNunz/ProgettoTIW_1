@@ -108,6 +108,10 @@ public class UserDAO {
 	 */
 	public boolean addUser(String userName , String password) throws SQLException{
 		int code = 0;
+		
+		if(findUser(userName) == true)
+			return false;
+		
 		String query = "INSERT into user (UserName,Password) VALUES(?,?)";
 		PreparedStatement pStatement = null;
 		
