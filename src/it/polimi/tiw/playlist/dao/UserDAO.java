@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.ZoneId;
 
+import it.polimi.tiw.playlist.beans.User;
+
 public class UserDAO {
 	private Connection connection;
 	
@@ -60,23 +62,21 @@ public class UserDAO {
 	 * @return true is password and userName are right, false if userName doesn't exist or password is wrong
 	 * @throws SQLException
 	 */
-	public boolean checkAuthentication(String userName, String password) throws SQLException{
-		boolean result = false;
-		String query ="SELECT password FROM user WHERE UserName = ?";
+	public User checkAuthentication(String userName, String password) throws SQLException{
+		String query ="SELECT * FROM user WHERE UserName = ? AND Password = ?";
 		ResultSet resultSet = null;
 		PreparedStatement pStatement = null;
 		
-		try{
-			if(findUser(userName) == false) return false;
-			
+		try{			
 			pStatement = connection.prepareStatement(query);
 			pStatement.setString(1 , userName);
+			pStatement.setString(2 , password);
 			
 			resultSet = pStatement.executeQuery();
 			
 			if(resultSet.next()) {
-				if(resultSet.getString("password").equals(password))
-					result = true;
+				//if(resultSet.getString("password").equals(password))
+					return new User(resultSet.getString("UserName") , resultSet.getString("Password") , resultSet.getInt("Id"));
 			}	
 		}catch(SQLException e) {
 			throw new SQLException();
@@ -96,7 +96,7 @@ public class UserDAO {
 				throw new SQLException(e2);
 			}
 		}
-		return result;
+		return null;
 	}
 
 	/**

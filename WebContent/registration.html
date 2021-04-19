@@ -1,24 +1,24 @@
-<!DOCTYPE>
-<html>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
 
 	<head>
 		<meta charset = "UTF-8">
 		<title> RegistrationPage </title>
+		<link rel="stylesheet" type="text/css" media="all" href="../CSS/mystyle.css" th:href="@{/css/mystyle.css}" />
 	</head>
 
 	<body>
 		<h1>Registration Page</h1>
 		<p>Fill the field below and submit to create a new account</p>
-		
+    	
 		<form action="Registration" method="POST">
-		<label for="user">UserName:</label>
-		<input type="text" id="user" name="user" required><br><br>
-		
-		<label for="password">Password:</label>
-		<input type="text" id="password" name="password" required><br><br>
-		
-		<input type="submit" value="submit">		
-	</form>
+		  <fieldset>
+		      	<p>UserName: <input type="text" id="user" name="user" required/></p>			
+        		<p>Password: <input type="text" id="password" name="password" required/></p>	
+        		<p><input type="submit" value="submit" /></p>
+		  </fieldset>
+		  <p th:class="error" th:text=" ${errorMsg}"></p>
+		</form>
 	
 	<a href="login.html">Login page</a>
 	</body>
