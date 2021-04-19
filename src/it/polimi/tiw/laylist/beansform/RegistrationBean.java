@@ -29,7 +29,7 @@ public class RegistrationBean {
 	}
 	
 	/**
-	 * This method checks if the userName is unique and, if it is, set the userName.Otherwise userName will be null
+	 * This method checks if the userName is unique and, if it is, set the userName.Otherwise userName will be empty
 	 * @param userName 
 	 */
 	private void setUserName(String userName) {
@@ -39,9 +39,9 @@ public class RegistrationBean {
 			if(user.findUser(userName) == false)
 				this.userName = userName;
 			else 
-				this.userName = null;
+				this.userName = "";
 		}catch(SQLException e) {
-			this.userName = null;
+			this.userName = "";
 		}
 	}
 	
@@ -52,20 +52,20 @@ public class RegistrationBean {
 	private void setPassword(String password) {
 		//Check if the password isn't null or empty
 		if(password == null || password.isEmpty()) {
-			this.password = null;
+			this.password = "";
 			return;
 		}
 		
 		//Check if the password contain at least one number and one special character and if it has a size bigger than 4
 		if(!(password.contains("0") || password.contains("1") || password.contains("2") || password.contains("3") || password.contains("4") || password.contains("5") || password.contains("6") || password.contains("7") || password.contains("8") || password.contains("9")) 
 				|| !(password.contains("#") || password.contains("@") || password.contains("_")) || password.length() < 4) {
-			this.password = null;
+			this.password = "";
 			return;
 		}
 		
 		//Check if the password is too long
 		if(password.length() > 25) {
-			this.password = null;
+			this.password = "";
 			return;
 		}
 		

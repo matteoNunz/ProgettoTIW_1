@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+		<title> Home </title>
+	</head>
+
+	<body>
+		<h1>Home page</h1>
+		<h2>Nice to see you again <span th:text="${user.userName}"></span></h2>
+		<br>
+		<div th:if="${#lists.isEmpty(playlists)}">
+			No playList yet
+		</div>
+		<div th:if="${not #lists.isEmpty(playlists)}">
+			<table border="1">
+				<thead>
+					<tr>
+						<th>PlayList name</th>
+						<th>Creation date</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="p : ${playlists}">
+						<td th:href="@{GoToPlayListPage(playlistId=${p.id})}">
+							<span th:text="${p.title}"></span>	
+						</td>
+						<td><span th:text="${#dates.format(p.creationDate , 'dd.MM.yyyy')}"></span></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<br><br>
+		<fieldset class="field">
+			<form th:action="@{/CreatePlaylist}" method="POST">
+				Create a new playList<br>
+				<p>Title: <input type="text" id="title" name="title" required></p>
+				<p><input type="submit" value="submit"></p>
+				<p th:class = "error" th:text="${errorMsg}"></p>
+			</form>
+		</fieldset>
+		
+		
+	</body>
+
+</html>

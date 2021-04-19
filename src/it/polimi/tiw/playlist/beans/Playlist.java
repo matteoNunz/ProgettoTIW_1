@@ -1,19 +1,15 @@
 package it.polimi.tiw.playlist.beans;
 
-import java.sql.Date;//maybe java.util.Date;
+import java.sql.Date;
 
 public class Playlist {
+	private int id;
 	private String title;
 	private Date creationDate;
-
-	public Playlist(String title , Date creationDate) {
-		this.title = title;
-		this.creationDate = creationDate;
-	}
 	
 	/**
 	 * 
-	 * @return the title of the Playlist
+	 * @return the title of the PlayList
 	 */
 	public String getTitle() {
 		return title;
@@ -21,19 +17,46 @@ public class Playlist {
 	
 	/**
 	 * 
-	 * @return the creation date of the Playlist
+	 * @return the id of the playlist
+	 */
+	public int getId() {
+		return id;
+	}
+	
+	/**
 	 * 
-	 * No set of creationDate because it's unique
+	 * @return the creation date of the Playlist
 	 */
 	public Date getCreationDate() {
 		return creationDate;
 	}
 	
 	/**
-	 * In case of new title 
+	 * Set the title
 	 * @param newTitle is the new title
 	 */
-	public void setTitle(String newTitle) {
-		this.title = newTitle;
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	
+	/**
+	 * Set the id
+	 * @param id
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	/**
+	 * Set the creation date
+	 * @param date
+	 */
+	public void setCreationDate(Date date) {
+		this.creationDate = date;
 	}
 }
+
+
+
+
+

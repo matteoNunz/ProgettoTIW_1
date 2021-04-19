@@ -3,6 +3,7 @@ package it.polimi.tiw.playlist.beans;
 import java.sql.Date;//maybe java.util.Date;
 
 public class SongDetails{
+	private int id;
 	private String songTitle;
 	private String albumTitle;
 	private String singer;
@@ -10,13 +11,14 @@ public class SongDetails{
 	private String file;//where is the music file
 	private Date publicationYear;
 
-	public SongDetails(String songTitle , String albumTitle , String singer , String kindOf , String file , Date publicationYear) {
+	public SongDetails(String songTitle , String albumTitle , String singer , String kindOf , String file , Date publicationYear , int id) {
 		this.songTitle = songTitle;
 		this.albumTitle = albumTitle;
 		this.singer = singer;
 		this.kindOf = kindOf;
 		this.file = file;
 		this.publicationYear = publicationYear;
+		this.id = id;
 	}
 	
 	/**
