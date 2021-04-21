@@ -69,9 +69,7 @@ public class CheckLogin extends HttpServlet{
 			error += "Missing parameters;";
 		
 		if(!error.equals("")) {
-			//String path = getServletContext().getContextPath() + "/login.html";
 			String path = "/login.html";
-			//String path = "/";
 			ServletContext servletContext = getServletContext();
 			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 			ctx.setVariable("errorMsg", error);
@@ -91,7 +89,6 @@ public class CheckLogin extends HttpServlet{
 				response.sendRedirect(path);
 			}else {
 				error += "Username e/o password are incorrect;";
-				//String path = getServletContext().getContextPath() + "/login.html";
 				String path = "login.html";
 				ServletContext servletContext = getServletContext();
 				final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
