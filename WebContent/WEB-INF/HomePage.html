@@ -39,8 +39,24 @@
 				<p th:class = "error" th:text="${errorMsg}"></p>
 			</form>
 		</fieldset>
-		
+		<br><br>
+		<fieldset class="field">
+			<form th:action="@{/CreateSong}" method="POST">
+				Create a new song<br>
+				<p>Title: 					<input type="text" id="title" name="title" required></p>
+				<p>Genre: 					<input type="text" id="genre" name="genre" required></p>
+				<p>Album title: 			<input type="text" id="albumTitle" name="albumTitle" required></p>
+				<p>Singer: 					<input type="text" id="singer" name="singer" required></p>
+				<p>Album publication year: 	<input type="number" id="date" name="date" required></p>
+				<p>Album image: 			<input type="file" id="albumImg" name="albumImg" required></p>
+				<p>MP3 file: 				<input type="file" id="songFile" name="songFile" required></p>
+				<p th:class = "error" th:text="${errorMsg1}">
+			</form>
+		</fieldset>
 		
 	</body>
 
 </html>
+
+
+
