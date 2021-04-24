@@ -41,8 +41,8 @@
 		</fieldset>
 		<br><br>
 		<fieldset class="field">
-			<form th:action="@{/CreateSong}" method="POST">
-				Create a new song<br>
+			<form th:action="@{/CreateSong}" method="POST" enctype="multipart/form-data">
+				Add a new song in your DataBase<br>
 				<p>Title: 					<input type="text" id="title" name="title" required></p>
 				<p>Genre: 					<input type="text" id="genre" name="genre" required></p>
 				<p>Album title: 			<input type="text" id="albumTitle" name="albumTitle" required></p>
@@ -50,6 +50,7 @@
 				<p>Album publication year: 	<input type="number" id="date" name="date" required></p>
 				<p>Album image: 			<input type="file" id="albumImg" name="albumImg" required></p>
 				<p>MP3 file: 				<input type="file" id="songFile" name="songFile" required></p>
+				<p><input type="submit" value="submit"></p>
 				<p th:class = "error" th:text="${errorMsg1}">
 			</form>
 		</fieldset>

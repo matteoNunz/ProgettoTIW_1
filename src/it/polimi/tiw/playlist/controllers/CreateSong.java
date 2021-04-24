@@ -15,6 +15,7 @@ import java.util.Calendar;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -31,6 +32,7 @@ import it.polimi.tiw.playlist.beans.User;
 import it.polimi.tiw.playlist.dao.SongDAO;
 
 @WebServlet("/CreateSong")
+@MultipartConfig 
 public class CreateSong extends HttpServlet{
 	
 	private static final long serialVersionUID = 1L;
@@ -76,9 +78,14 @@ public class CreateSong extends HttpServlet{
 		String albumTitle = request.getParameter("albumTitle");
 		String singer = request.getParameter("singer");
 		String date = request.getParameter("date");
+		
 		Part albumImg = request.getPart("albumImg");
 		Part songFile = request.getPart("songFile");
 		
+		//I should do some controls about the user session
+		HttpSession s = request.getSession();
+		User user = (User) s.getAttribute("user");
+
 		String error = "";
 		
 		//Check if the user missed some parameters
@@ -91,7 +98,7 @@ public class CreateSong extends HttpServlet{
 		int publicationYear = Integer.parseInt(date);
 		
 		//Take the current year
-		int currentYear = Calendar.YEAR;
+		int currentYear = Calendar.getInstance().get(Calendar.YEAR);
 		
 		//Check if the publicationYear is not bigger than the current year
 		if(publicationYear > currentYear)
@@ -106,8 +113,8 @@ public class CreateSong extends HttpServlet{
 			error += "Album title too long;";
 		if(singer.length() > 45)
 			error += "Singer name too long;";
-			
-		//Take the type of the image file uploaded
+		
+		//Take the type of the image file uploaded : image/png
 		String contentTypeImg = albumImg.getContentType();
 		System.out.println("Image type is: " + contentTypeImg);
 
@@ -115,41 +122,47 @@ public class CreateSong extends HttpServlet{
 		if(!contentTypeImg.startsWith("image"))
 			error += "Image file not valid;";
 		
-		//Take the type of the music file uploaded
+		//Take the type of the music file uploaded : audio/mpeg
 		String contentTypeMusic = songFile.getContentType();
 		System.out.println("Music type is: " + contentTypeMusic);
 		
 		//Check the type of the music file uploaded
-		if(!contentTypeMusic.startsWith("mp3"))
+		if(!contentTypeMusic.startsWith("audio"))
 			error += "Music file not valid";
-		
-		//I should do some controls about the user session
-		HttpSession s = request.getSession();
-		User user = (User) s.getAttribute("user");
 		
 		//If an error occurred, redirect with errorMsg1 to the template engine  
 		if(!error.equals("")) {
+			/*
 			String path = "/WEB-INF/HomePage.html";
 			ServletContext servletContext = getServletContext();
 			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+			ctx.setVariable("user", user);
 			ctx.setVariable("errorMsg1", error);
-			templateEngine.process(path, ctx, response.getWriter());
+			templateEngine.process(path, ctx, response.getWriter());*/
+			
+			request.setAttribute("error1", error);
+			String path = "/GoToHomePage";
+
+			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(path);
+			dispatcher.forward(request,response);
 		}
 		
 		//Take the path where store the image
 		String fileNameImg = Paths.get(albumImg.getSubmittedFileName()).getFileName().toString();
+		System.out.println("Test image: " + albumImg.getName());
+		System.out.println("Test 1: "+ Paths.get(albumImg.getSubmittedFileName()));
 		System.out.println("Filename image: " + fileNameImg);
 		
 		//Take the path where store the music file
 		String fileNameSong = Paths.get(songFile.getSubmittedFileName()).getFileName().toString();
 		System.out.println("Filename music: " + fileNameSong);
 		
-		//Create the final path for images adding the user id in the end to avoid error in case of duplicate name;
-		String outputPathImg = imgFolderPath + fileNameImg + "_" + user.getId();
+		//Create the final path for images adding the user id in the start to avoid error in case of duplicate name;
+		String outputPathImg = imgFolderPath + user.getId() + "_" + fileNameImg;
 		System.out.println("Output path img: " + outputPathImg);
 		
-		//Create the final part for music files adding the user id in the end to avoid error in case of duplicate name;
-		String outputPathSong = mp3FolderPath + fileNameSong + "_" + user.getId();
+		//Create the final part for music files adding the user id in the start to avoid error in case of duplicate name;
+		String outputPathSong = mp3FolderPath + user.getId()  + "_" + fileNameSong;
 		System.out.println("Output path song: " + outputPathSong);
 		
 		//Save the image
@@ -178,11 +191,17 @@ public class CreateSong extends HttpServlet{
 		
 		//If an error occurred, redirect with errorMsg1 to the template engine  
 		if(!error.equals("")) {
-			String path = "/WEB-INF/HomePage.html";
+			/*String path = "/WEB-INF/HomePage.html";
 			ServletContext servletContext = getServletContext();
 			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
+			ctx.setVariable("user", user); 
 			ctx.setVariable("errorMsg1", error);
-			templateEngine.process(path, ctx, response.getWriter());
+			templateEngine.process(path, ctx, response.getWriter());*/
+			request.setAttribute("error1", error);
+			String path = "/GoToHomePage";
+
+			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(path);
+			dispatcher.forward(request,response);
 		}
 		
 		//Now it's possible update the data base
@@ -197,8 +216,8 @@ public class CreateSong extends HttpServlet{
 				response.sendRedirect(path);
 			}
 			else {
-				error += "Impossible upload the database , try later";
-				request.setAttribute("error", error);
+				error += "Impossible upload file in the database , try later";
+				request.setAttribute("error1", error);
 				String path = "/GoToHomePage";
 
 				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(path);
