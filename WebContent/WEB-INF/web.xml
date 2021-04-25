@@ -22,11 +22,11 @@
   <!--Where the server will upload the album images and the mp3 song files-->
   <context-param>
 	<param-name>albumImgPath</param-name>
-	<param-value>/Utenti/"Matteo Nunziante"/Documents/TIWFile/AlbumImg/</param-value>
+	<param-value>C:\Users\Matteo Nunziante\Documents\TIWFile\AlbumImg\</param-value>
   </context-param>
   <context-param>
 	<param-name>songFilePath</param-name>
-	<param-value>/Utenti/"Matteo Nunziante"/Documents/TIWFile/SongFile/</param-value>
+	<param-value>C:\Users\Matteo Nunziante\Documents\TIWFile\SongFile\</param-value>
   </context-param>
 
   <!--Welcome files-->

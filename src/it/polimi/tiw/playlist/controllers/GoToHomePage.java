@@ -62,12 +62,15 @@ public class GoToHomePage extends HttpServlet {
 		User user = (User) s.getAttribute("user");
 		ArrayList<Playlist> playlists = null;
 		String error = "";
+		String error1 = "";
 		
 		PlaylistDAO pDao = new PlaylistDAO(connection);
 		
-		//In case of forward from CreatePlaylist
+		//In case of forward from CreatePlaylist and CreateSong
 		if(((String) request.getAttribute("error")) != null) 
 			error = (String) request.getAttribute("error");
+		if(((String) request.getAttribute("error1")) != null) 
+			error1 = (String) request.getAttribute("error1");
 		
 		try {
 			playlists = pDao.findPlaylist(user.getId());
@@ -81,6 +84,7 @@ public class GoToHomePage extends HttpServlet {
 		ctx.setVariable("playlists" , playlists);
 		ctx.setVariable("user", user);
 		ctx.setVariable("errorMsg", error);
+		ctx.setVariable("errorMsg1", error1);
 		templateEngine.process(path , ctx , response.getWriter());
 	}
 	
