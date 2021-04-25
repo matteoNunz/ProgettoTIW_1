@@ -120,7 +120,7 @@ public class SongDAO {
 	}
 	
 	private boolean createSong(int userId , String songTitle , String genre , int albumId , String outputPathSong) throws SQLException{
-		String query = "INSERT INTO song (IdUser , KindOf , MusifFile , SongTitle , IdAlbum) VALUES (? , ? , ? , ? , ?)";
+		String query = "INSERT INTO song (IdUser , KindOf , MusicFile , SongTitle , IdAlbum) VALUES (? , ? , ? , ? , ?)";
 		PreparedStatement pStatement = null;
 		int code = 0;
 		

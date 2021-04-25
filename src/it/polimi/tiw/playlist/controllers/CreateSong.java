@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.SQLException;
  
@@ -24,7 +24,6 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
 import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
@@ -132,14 +131,6 @@ public class CreateSong extends HttpServlet{
 		
 		//If an error occurred, redirect with errorMsg1 to the template engine  
 		if(!error.equals("")) {
-			/*
-			String path = "/WEB-INF/HomePage.html";
-			ServletContext servletContext = getServletContext();
-			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-			ctx.setVariable("user", user);
-			ctx.setVariable("errorMsg1", error);
-			templateEngine.process(path, ctx, response.getWriter());*/
-			
 			request.setAttribute("error1", error);
 			String path = "/GoToHomePage";
 
@@ -147,13 +138,13 @@ public class CreateSong extends HttpServlet{
 			dispatcher.forward(request,response);
 		}
 		
-		//Take the path where store the image
-		String fileNameImg = Paths.get(albumImg.getSubmittedFileName()).getFileName().toString();
-		System.out.println("Test image: " + albumImg.getName());
+		//Take the name of the image uploaded
+		String fileNameImg = Path.of(albumImg.getSubmittedFileName()).getFileName().toString();
+		System.out.println("Test image: " + albumImg.getSubmittedFileName());
 		System.out.println("Test 1: "+ Paths.get(albumImg.getSubmittedFileName()));
 		System.out.println("Filename image: " + fileNameImg);
 		
-		//Take the path where store the music file
+		//Take the name of the song uploaded
 		String fileNameSong = Paths.get(songFile.getSubmittedFileName()).getFileName().toString();
 		System.out.println("Filename music: " + fileNameSong);
 		
@@ -164,6 +155,31 @@ public class CreateSong extends HttpServlet{
 		//Create the final part for music files adding the user id in the start to avoid error in case of duplicate name;
 		String outputPathSong = mp3FolderPath + user.getId()  + "_" + fileNameSong;
 		System.out.println("Output path song: " + outputPathSong);
+		
+		//Check if the final path are not too long
+		if(fileNameSong.length() > 255)
+			error += "Song name too long;";
+		if(fileNameImg.length() > 255) {
+			error += "Image name too long;";
+		}
+		//Check if a song or an image with the same name already exist
+		File tempFile = new File(outputPathImg);
+		if(tempFile.exists())
+			error += "Image name already exists;";
+		tempFile = new File(outputPathSong);
+		if(tempFile.exists())
+			error += "Song name already exists;";
+		System.out.println("Error is: " + error);
+		
+		//If an error occurred, redirect with errorMsg1 to the template engine  
+		if(!error.equals("")) {
+			request.setAttribute("error1", error);
+			String path = "/GoToHomePage";
+
+			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(path);
+			dispatcher.forward(request,response);
+			return;
+		}
 		
 		//Save the image
 		File fileImg = new File(outputPathImg);
