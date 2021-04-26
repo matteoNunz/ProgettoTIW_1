@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+		<meta charset="UTF-8">
+		<title> PlayList page </title>
+	</head>
+	
+	<body>
+		<h1> PlayList page </h1>
+		<h2>Hope you will have a good experience with us <span th:text="${user.userName}"></span></h2>
+		<br>
+		
+		<div th:if="${#lists.isEmpty(songsInPlaylist)}">
+			This play list doesn't have songs yet
+		</div>
+		<div th:if="${not #lists.isEmpty(songsInPlaylist)}">
+			<table>
+				<tbody>
+					<tr>
+						<td th:each="s : ${songsInPlaylist}">
+							<span th:text="$sp.title}"></span></td>			
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		
+		
+	</body>
+	
+</html>

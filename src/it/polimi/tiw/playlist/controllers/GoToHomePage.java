@@ -31,15 +31,16 @@ public class GoToHomePage extends HttpServlet {
 	private TemplateEngine templateEngine;
 	
 	public void init() {
+		ServletContext context = getServletContext();
+		
+		//Initializing the template engine
+		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(context);
+		templateResolver.setTemplateMode(TemplateMode.HTML);
+		this.templateEngine = new TemplateEngine();
+		this.templateEngine.setTemplateResolver(templateResolver);
+		templateResolver.setSuffix(".html");
+		
 		try {
-			ServletContext context = getServletContext();
-			
-			//Initializing the template engine
-			ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(context);
-			templateResolver.setTemplateMode(TemplateMode.HTML);
-			this.templateEngine = new TemplateEngine();
-			this.templateEngine.setTemplateResolver(templateResolver);
-			templateResolver.setSuffix(".html");
 			
 			//Initializing the connection
 			String driver = context.getInitParameter("dbDriver");
@@ -63,6 +64,7 @@ public class GoToHomePage extends HttpServlet {
 		ArrayList<Playlist> playlists = null;
 		String error = "";
 		String error1 = "";
+		String error2 = "";
 		
 		PlaylistDAO pDao = new PlaylistDAO(connection);
 		
@@ -71,6 +73,8 @@ public class GoToHomePage extends HttpServlet {
 			error = (String) request.getAttribute("error");
 		if(((String) request.getAttribute("error1")) != null) 
 			error1 = (String) request.getAttribute("error1");
+		if(((String) request.getAttribute("error2")) != null) 
+			error1 = (String) request.getAttribute("error2");
 		
 		try {
 			playlists = pDao.findPlaylist(user.getId());
@@ -85,6 +89,7 @@ public class GoToHomePage extends HttpServlet {
 		ctx.setVariable("user", user);
 		ctx.setVariable("errorMsg", error);
 		ctx.setVariable("errorMsg1", error1);
+		ctx.setVariable("errorMsg2", error2);
 		templateEngine.process(path , ctx , response.getWriter());
 	}
 	

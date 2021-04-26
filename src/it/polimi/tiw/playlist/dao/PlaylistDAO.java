@@ -69,8 +69,8 @@ public class PlaylistDAO {
 	 * @throws SQLException
 	 */
 	public boolean findPlaylistByTitle(String title) throws SQLException{
-		boolean result = false;
 		String query = "SELECT * FROM playlist WHERE Title = ?";
+		boolean result = false;
 		ResultSet resultSet = null;
 		PreparedStatement pStatement = null;
 		
@@ -135,6 +135,50 @@ public class PlaylistDAO {
 			}
 		}
 		return (code > 0);
+	}
+	
+	/**
+	 * Method that find if a playList and a user are connected
+	 * @param playlistId is the id of the playList
+	 * @param userId is the id of the user
+	 * @return true if the user created this playList, false otherwise
+	 * @throws SQLException
+	 */
+	public boolean findPlayListById(int playlistId , int userId) throws SQLException{
+		String query = "SELECT * FROM playlist WHERE Id = ? AND IdUserName = ?";
+		boolean result = false;
+		ResultSet resultSet = null;
+		PreparedStatement pStatement = null;
+		
+		try {
+			pStatement = connection.prepareStatement(query);
+			pStatement.setInt(1 , playlistId);
+			pStatement.setInt(2 , userId);
+			
+			resultSet = pStatement.executeQuery();
+			
+			if(resultSet.next()) {
+				result = true;
+			}
+		}catch(SQLException e) {
+			throw new SQLException();
+		}finally{
+			try {
+				if(resultSet != null) {
+					resultSet.close();
+				}
+			}catch(Exception e1) {
+				throw new SQLException(e1);
+			}
+			try {
+				if(pStatement != null) {
+					pStatement.close();
+				}
+			}catch(Exception e2) {
+				throw new SQLException(e2);
+		    }
+		}
+		return result;
 	}
 }
 

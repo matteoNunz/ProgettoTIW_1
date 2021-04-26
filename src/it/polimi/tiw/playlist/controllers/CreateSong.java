@@ -36,19 +36,11 @@ public class CreateSong extends HttpServlet{
 	
 	private static final long serialVersionUID = 1L;
 	private Connection connection;
-	private TemplateEngine templateEngine;
 	private String imgFolderPath = "";
 	private String mp3FolderPath = "";
 	
 	public void init() {
 		ServletContext context = getServletContext();
-		
-		//Initializing the template engine
-		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(context);
-		templateResolver.setTemplateMode(TemplateMode.HTML);
-		this.templateEngine = new TemplateEngine();
-		this.templateEngine.setTemplateResolver(templateResolver);
-		templateResolver.setSuffix(".html");
 		
 		//Initializing the folder where images and mp3 files will be uploaded
 		imgFolderPath = context.getInitParameter("albumImgPath");
@@ -120,6 +112,13 @@ public class CreateSong extends HttpServlet{
 		//Check if the type is an image
 		if(!contentTypeImg.startsWith("image"))
 			error += "Image file not valid;";
+		else {
+			//If it's an image, check id the size is bigger than 1024KB (about 1MB)
+			if(albumImg.getSize() > 1024000) {
+				error += "Image size is too big;";
+			}	
+			System.out.println("Image size is: " + albumImg.getSize());
+		}
 		
 		//Take the type of the music file uploaded : audio/mpeg
 		String contentTypeMusic = songFile.getContentType();
@@ -128,6 +127,13 @@ public class CreateSong extends HttpServlet{
 		//Check the type of the music file uploaded
 		if(!contentTypeMusic.startsWith("audio"))
 			error += "Music file not valid";
+		else {
+			//If it's a song, check if the size is bigger than 10240KB (about 10MB)
+			if(songFile.getSize() > 10240000) {
+				error += "Song size is too big;";
+			}	
+			System.out.println("Song size is: " + songFile.getSize());
+		}
 		
 		//If an error occurred, redirect with errorMsg1 to the template engine  
 		if(!error.equals("")) {
@@ -136,6 +142,7 @@ public class CreateSong extends HttpServlet{
 
 			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(path);
 			dispatcher.forward(request,response);
+			return;
 		}
 		
 		//Take the name of the image uploaded
@@ -168,7 +175,7 @@ public class CreateSong extends HttpServlet{
 			error += "Image name already exists;";
 		tempFile = new File(outputPathSong);
 		if(tempFile.exists())
-			error += "Song name already exists;";
+			error += "Song name already exists; ";
 		System.out.println("Error is: " + error);
 		
 		//If an error occurred, redirect with errorMsg1 to the template engine  
@@ -202,22 +209,17 @@ public class CreateSong extends HttpServlet{
 			System.out.println("File saved correctly!");
 
 		} catch (Exception e) {
-			error += "Error in uploading the music file;";
+			error += "Error in uploading the music file;\n";
 		}
 		
 		//If an error occurred, redirect with errorMsg1 to the template engine  
 		if(!error.equals("")) {
-			/*String path = "/WEB-INF/HomePage.html";
-			ServletContext servletContext = getServletContext();
-			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-			ctx.setVariable("user", user); 
-			ctx.setVariable("errorMsg1", error);
-			templateEngine.process(path, ctx, response.getWriter());*/
 			request.setAttribute("error1", error);
 			String path = "/GoToHomePage";
 
 			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(path);
 			dispatcher.forward(request,response);
+			return;
 		}
 		
 		//Now it's possible update the data base

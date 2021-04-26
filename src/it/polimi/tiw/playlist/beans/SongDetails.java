@@ -8,17 +8,26 @@ public class SongDetails{
 	private String albumTitle;
 	private String singer;
 	private String kindOf;
-	private String file;//where is the music file
-	private Date publicationYear;
+	private String songFile;//where is the music file
+	private String imgFile;
+	private int publicationYear;
 
-	public SongDetails(String songTitle , String albumTitle , String singer , String kindOf , String file , Date publicationYear , int id) {
+	/*public SongDetails(String songTitle , String albumTitle , String singer , String kindOf , String file , Date publicationYear , int id) {
 		this.songTitle = songTitle;
 		this.albumTitle = albumTitle;
 		this.singer = singer;
 		this.kindOf = kindOf;
-		this.file = file;
+		this.songFile = file;
 		this.publicationYear = publicationYear;
 		this.id = id;
+	}*/
+	
+	/**
+	 * 
+	 * @return the id of the song
+	 */
+	public int getId() {
+		return id;
 	}
 	
 	/**
@@ -57,20 +66,36 @@ public class SongDetails{
 	 * 
 	 * @return the path of the music file
 	 */
-	public String getFile() {
-		return file;
+	public String getSongFile() {
+		return songFile;
+	}
+	
+	/**
+	 * 
+	 * @return the path of the image
+	 */
+	public String getImgFile() {
+		return imgFile;
 	}
 	
 	/**
 	 * 
 	 * @return the publication year of the album that contains the song
 	 */
-	public Date getPublicationYear() {
+	public int getPublicationYear() {
 		return publicationYear;
 	}
 	
 	/**
-	 * Change the SongTitle
+	 * Set the song id
+	 * @param id is the unique id of the song
+	 */
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	/**
+	 * Set the SongTitle
 	 * @param newSongTitle is the new title of the song
 	 */
 	public void setSongTitle(String newSongTitle) {
@@ -78,7 +103,7 @@ public class SongDetails{
 	}
 	
 	/**
-	 * Change the title of the album that contains the song
+	 * Set the title of the album that contains the song
 	 * @param newAlbumTitle
 	 */
 	public void setAlbumTitle(String newAlbumTitle) {
@@ -87,7 +112,7 @@ public class SongDetails{
 	
 	
 	/**
-	 * Change the name of singer
+	 * Set the name of singer
 	 * @param newSinger is the new name
 	 */
 	public void setSinger(String newSinger) {
@@ -95,7 +120,7 @@ public class SongDetails{
 	}
 	
 	/**
-	 * Change the kinf of the song
+	 * Set the kind of the song
 	 * @param newKindOf is the new type
 	 */
 	public void setKindOf(String newKindOf) {
@@ -103,11 +128,27 @@ public class SongDetails{
 	}
 	
 	/**
-	 * Change the position of the file
+	 * Set the position of the file
 	 * @param newFile is the position where the file is stored
 	 */
 	public void setFile(String newFile) {
-		this.file = newFile;
+		this.songFile = newFile;
+	}
+	
+	/**
+	 * Set the position of the image
+	 * @param newFile is the position where the song is stored
+	 */
+	public void setImgFile(String newFile) {
+		this.imgFile = newFile;
+	}
+	
+	/**
+	 * Set the publication year
+	 * @param date is the year 
+	 */
+	public void setPublicationYear(int date) {
+		this.publicationYear = date;
 	}
 }
 
