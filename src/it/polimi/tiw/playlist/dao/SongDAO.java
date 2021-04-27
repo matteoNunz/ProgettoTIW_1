@@ -232,8 +232,8 @@ public class SongDAO {
 	}
 	
 	public ArrayList<SongDetails> getSongsNotInPlaylist(int playlistId) throws SQLException{
-		String query = "SELECT * FROM song WHERE id NOT IN "
-				+ "SELECT IdSong FROM contains WHERE IdPlaylisy = ?";
+		String query = "SELECT * FROM song WHERE Id NOT IN ("
+				+ "SELECT IdSong FROM contains WHERE IdPlaylist = ?)";
 		ResultSet resultSet = null;
 		PreparedStatement pStatement = null;
 		ArrayList<SongDetails> songs = new ArrayList<SongDetails>();
@@ -269,6 +269,50 @@ public class SongDAO {
 			}
 		}
 		return songs;
+	}
+	
+	/**
+	 * Method that verify if a song belongs to a specific user
+	 * @param sId is the song id
+	 * @param userId is the user id
+	 * @return true if the song belongs, false otherwise
+	 * @throws SQLException
+	 */
+	public boolean findSongByUser(int sId , int userId) throws SQLException{
+		String query = "SELECT * FROM song WHERE Id = ? AND IdUser = ?";
+		boolean result = false;
+		PreparedStatement pStatement = null;
+		ResultSet resultSet = null;
+		
+		try {
+			pStatement = connection.prepareStatement(query);
+			pStatement.setInt(1, sId);
+			pStatement.setInt(2, userId);
+			
+			resultSet = pStatement.executeQuery();
+			
+			if(resultSet.next())
+				result = true;
+			
+		}catch(SQLException e) {
+			throw new SQLException();
+		}finally {
+			try {
+				if(resultSet != null) {
+					resultSet.close();
+				}
+			}catch(Exception e1) {
+				throw new SQLException(e1);
+			}
+			try {
+				if(pStatement != null) {
+					pStatement.close();
+				}
+			}catch(Exception e2) {
+				throw new SQLException(e2);
+			}
+		}	
+		return result;
 	}
 	
 }

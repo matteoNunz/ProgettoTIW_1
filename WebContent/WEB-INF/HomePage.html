@@ -4,6 +4,8 @@
 	<head>
 		<meta charset="UTF-8">
 		<title> Home </title>
+		<link rel="stylesheet" type="text/css" media="all"
+			href="../CSS/mystyle.css" th:href="@{/css/mystyle.css}" />
 	</head>
 
 	<body>
@@ -23,8 +25,8 @@
 				</thead>
 				<tbody>
 					<tr th:each="p : ${playlists}">
-						<td th:href="@{GoToPlayListPage(playlistId=${p.id})}">
-							<span th:text="${p.title}"></span>	
+						<td><a th:href="@{GoToPlayListPage(playlistId=${p.id})}">
+							<span th:text="${p.title}"></span></a>
 						</td>
 						<td><span th:text="${#dates.format(p.creationDate , 'dd.MM.yyyy')}"></span></td>
 					</tr>

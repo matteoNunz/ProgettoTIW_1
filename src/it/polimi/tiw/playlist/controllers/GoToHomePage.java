@@ -74,7 +74,7 @@ public class GoToHomePage extends HttpServlet {
 		if(((String) request.getAttribute("error1")) != null) 
 			error1 = (String) request.getAttribute("error1");
 		if(((String) request.getAttribute("error2")) != null) 
-			error1 = (String) request.getAttribute("error2");
+			error2 = (String) request.getAttribute("error2");
 		
 		try {
 			playlists = pDao.findPlaylist(user.getId());

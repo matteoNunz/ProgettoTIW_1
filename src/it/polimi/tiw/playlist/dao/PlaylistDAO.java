@@ -180,6 +180,82 @@ public class PlaylistDAO {
 		}
 		return result;
 	}
+	
+	/**
+	 * Method that find the title of a playList by its id
+	 * @param playlistId is the unique id of the playList
+	 * @return a String containing the title
+	 * @throws SQLException
+	 */
+	public String findPlayListTitleById(int playlistId) throws SQLException{
+		String query = "SELECT * FROM playlist WHERE Id = ?";
+		String result = null;
+		ResultSet resultSet = null;
+		PreparedStatement pStatement = null;
+		
+		try {
+			pStatement = connection.prepareStatement(query);
+			pStatement.setInt(1 , playlistId);
+			
+			resultSet = pStatement.executeQuery();
+			
+			if(resultSet.next()) {
+				result = resultSet.getString("Title");
+			}
+		}catch(SQLException e) {
+			throw new SQLException();
+		}finally{
+			try {
+				if(resultSet != null) {
+					resultSet.close();
+				}
+			}catch(Exception e1) {
+				throw new SQLException(e1);
+			}
+			try {
+				if(pStatement != null) {
+					pStatement.close();
+				}
+			}catch(Exception e2) {
+				throw new SQLException(e2);
+		    }
+		}
+		return result;
+	}
+	
+	/**
+	 * Method that add a song to a playList in the "contains" schema 
+	 * Maybe this method will go in a future bean called contains 
+	 * @param pId is the playList id
+	 * @param sId is the song id
+	 * @return true if the update went well, false otherwise
+	 * @throws SQLException
+	 */
+	public boolean addSong(int pId , int sId) throws SQLException{
+		String query = "INSERT INTO contains (IdSong , IdPlaylist) VALUES (? , ?)";
+		int code = 0;
+		PreparedStatement pStatement = null;
+		
+		try {
+			pStatement = connection.prepareStatement(query);
+			pStatement.setInt(1, sId);
+			pStatement.setInt(2, pId);
+			
+			code = pStatement.executeUpdate();
+		}catch(SQLException e) {
+			throw new SQLException();
+		}finally {
+			try {
+				if(pStatement != null) {
+					pStatement.close();
+				}
+			}catch(Exception e2) {
+				throw new SQLException(e2);
+		    }
+		}
+		return (code > 0);
+	}
+	
 }
 
 

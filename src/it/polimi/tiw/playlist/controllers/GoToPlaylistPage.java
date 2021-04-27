@@ -20,6 +20,7 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
+import it.polimi.tiw.playlist.beans.Playlist;
 import it.polimi.tiw.playlist.beans.SongDetails;
 import it.polimi.tiw.playlist.beans.User;
 import it.polimi.tiw.playlist.dao.PlaylistDAO;
@@ -64,7 +65,6 @@ public class GoToPlaylistPage extends HttpServlet{
 		String playlistId = request.getParameter("playlistId");
 		String error = "";
 		int id = -1;
-		User user = null;
 		
 		//I should do some controls about the user session
 		HttpSession s = request.getSession();
@@ -74,29 +74,28 @@ public class GoToPlaylistPage extends HttpServlet{
 			return;
 		}
 		
-		try {
-			id = Integer.parseInt(playlistId);	
-		}catch(NumberFormatException e) {
+		//Take the user
+	    User user = (User) s.getAttribute("user");
+	    
+		//Check if playlistId is valid
+		if(playlistId.isEmpty() || playlistId == null)
 			error += "Playlist not defined;";
-		}
 		
 		//Check the follow only if the id is valid
-		if(!error.equals("")) {
-			//Check if playlistId is valid
-			if(playlistId.isEmpty() || playlistId == null)
-				error += "Playlist not defined;";
-			
-			//Take the user
-		    user = (User) s.getAttribute("user");
-			
-			//Create the Dao to check if the playList id belongs to the user 
+		if(error.equals("")) {
+			//Create the DAO to check if the playList id belongs to the user 
 			PlaylistDAO pDao = new PlaylistDAO(connection);
 			
 			try {
+				//Check if the playlistId is a number
+				id = Integer.parseInt(playlistId);
 				//Check if the player can access at this playList --> Check if the playList exists
+				System.out.println("Test playlist: " + !pDao.findPlayListById(id, user.getId()));
 				if(!pDao.findPlayListById(id, user.getId())) {
-					error += "This playList doesn't exist";
+						error += "PlayList doesn't exist";
 				}
+			}catch(NumberFormatException e) {
+				error += "Playlist not defined;";
 			}catch(SQLException e) {
 				error += "Impossible comunicate with the data base;";
 			}
@@ -111,14 +110,27 @@ public class GoToPlaylistPage extends HttpServlet{
 			return;
 		}
 		
-		
 		//The user created this playList
+		
+		//Take the error in case of forward from AddSong class
+		if(request.getAttribute("error") != null)
+			error = (String) request.getAttribute("error");
+		
 		SongDAO sDao = new SongDAO(connection);
+		
+		//To take the title of the playList
+		PlaylistDAO pDao = new PlaylistDAO(connection);
 		
 		//Take the titles and the image paths
 		try {
+			
 			ArrayList<SongDetails> songsInPlaylist = sDao.getSongTiteAndImg(id);
 			ArrayList<SongDetails> songsNotInPlaylist = sDao.getSongsNotInPlaylist(id);
+			String title = pDao.findPlayListTitleById(id);
+			
+			Playlist p = new Playlist();
+			p.setId(id);
+			p.setTitle(title);
 			
 			String path = "/WEB-INF/PlaylistPage.html";
 			ServletContext servletContext = getServletContext();
@@ -126,6 +138,7 @@ public class GoToPlaylistPage extends HttpServlet{
 			ctx.setVariable("user" , user);
 			ctx.setVariable("songsInPlaylist", songsInPlaylist);
 			ctx.setVariable("songsNotInPlaylist", songsNotInPlaylist);
+			ctx.setVariable("playlist", p);
 			ctx.setVariable("errorMsg", error);
 			templateEngine.process(path , ctx , response.getWriter());
 			
@@ -134,6 +147,14 @@ public class GoToPlaylistPage extends HttpServlet{
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An arror occurred with the db, retry later");
 		}
 	}
-	
 
+	public void destroy() {
+		try {
+			if (connection != null) {
+				connection.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 }

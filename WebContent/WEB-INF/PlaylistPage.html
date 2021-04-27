@@ -8,25 +8,47 @@
 	</head>
 	
 	<body>
-		<h1> PlayList page </h1>
-		<h2>Hope you will have a good experience with us <span th:text="${user.userName}"></span></h2>
+		<h2> PlayList <span th:text="${playlist.title}">PlayList1</span></h2>
+		<h3>Hope you will have a good experience with us <span th:text="${user.userName}">Mario</span></h3>
 		<br>
 		
 		<div th:if="${#lists.isEmpty(songsInPlaylist)}">
-			This play list doesn't have songs yet
+			This playList doesn't have songs yet
 		</div>
 		<div th:if="${not #lists.isEmpty(songsInPlaylist)}">
 			<table>
 				<tbody>
 					<tr>
 						<td th:each="s : ${songsInPlaylist}">
-							<span th:text="$sp.title}"></span></td>			
+							<span th:text="$s.title}"></span></td>			
 					</tr>
 				</tbody>
 			</table>
-		</div>
-		
-		
+		</div>	
 	</body>
+	<br><br>
+	
+	<div th:if="${#lists.isEmpty(songsNotInPlaylist)}">
+			All songs already in this playList
+	</div>
+	<div th:if="${not #lists.isEmpty(songsNotInPlaylist)}">
+		<fieldset>
+			Add a song to this playList
+			<form action="@{/AddSong(playlistId=${playlist.id})}" method="POST">
+				<select name=song>
+					<option th:each="s : ${songsNotInPlaylist}" th:value="${s.id}"
+								th:text="${s.songTitle}">song</option>
+				</select>
+				<p><input type="submit" value="submit"></p>
+				<p th:class = "error" th:text="${errorMsg}"></p>
+			</form>
+		</fieldset>
+	</div>
 	
 </html>
+
+
+
+
+
+
