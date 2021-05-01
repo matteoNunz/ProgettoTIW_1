@@ -231,8 +231,8 @@ public class SongDAO {
 		return songs;
 	}
 	
-	public ArrayList<SongDetails> getSongsNotInPlaylist(int playlistId) throws SQLException{
-		String query = "SELECT * FROM song WHERE Id NOT IN ("
+	public ArrayList<SongDetails> getSongsNotInPlaylist(int playlistId , int userId) throws SQLException{
+		String query = "SELECT * FROM song WHERE IdUser = ? AND Id NOT IN ("
 				+ "SELECT IdSong FROM contains WHERE IdPlaylist = ?)";
 		ResultSet resultSet = null;
 		PreparedStatement pStatement = null;
@@ -240,7 +240,8 @@ public class SongDAO {
 		
 		try {
 			pStatement = connection.prepareStatement(query);
-			pStatement.setInt(1, playlistId);
+			pStatement.setInt(1, userId);
+			pStatement.setInt(2, playlistId);
 			
 			resultSet = pStatement.executeQuery();
 			
@@ -313,6 +314,53 @@ public class SongDAO {
 			}
 		}	
 		return result;
+	}
+	
+	/**
+	 * Method that take from the data base details of a specific song
+	 * @param songId is the song id the user wants the details
+	 * @return a SongDetails object
+	 * @throws SQLException
+	 */
+	public SongDetails getSongDetails(int songId) throws SQLException{
+		String query = "SELECT * FROM song JOIN album on song.IdAlbum = album.Id WHERE song.Id = ?";
+		ResultSet resultSet = null;
+		PreparedStatement pStatement = null;
+		SongDetails song = new SongDetails();
+		
+		try {
+			pStatement = connection.prepareStatement(query);
+			pStatement.setInt(1, songId);
+			
+			resultSet = pStatement.executeQuery();
+			
+			if(resultSet.next()) {//theoretically always true -> I've just controlled there is a song
+				song.setSongTitle(resultSet.getString("song.SongTitle"));
+				song.setAlbumTitle(resultSet.getString("album.Title"));
+				song.setSinger(resultSet.getString("album.Singer"));
+				song.setKindOf(resultSet.getString("song.KindOf"));
+				song.setPublicationYear(resultSet.getInt("album.PublicationYear"));
+				song.setFile(resultSet.getString("song.MusicFile"));
+			}
+		}catch(SQLException e) {
+			throw new SQLException();
+		}finally {
+			try {
+				if(resultSet != null) {
+					resultSet.close();
+				}
+			}catch(Exception e1) {
+				throw new SQLException(e1);
+			}
+			try {
+				if(pStatement != null) {
+					pStatement.close();
+				}
+			}catch(Exception e2) {
+				throw new SQLException(e2);
+			}
+		}
+		return song;
 	}
 	
 }

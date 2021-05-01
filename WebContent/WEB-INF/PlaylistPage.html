@@ -20,30 +20,47 @@
 				<tbody>
 					<tr>
 						<td th:each="s : ${songsInPlaylist}">
-							<span th:text="$s.title}"></span></td>			
+							<table>
+								<tbody>
+									<tr>
+										<td>
+											<img th:src="@{${s.imgFile}}"/>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<a th:href="@{GoToSongPage(songId=${s.id})}">
+											<span th:text="${s.songTitle}"></span></a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>		
 					</tr>
 				</tbody>
 			</table>
 		</div>	
-	</body>
-	<br><br>
+		<p th:class = "error" th:text="${errorMsg1}"></p>
+		<br><br>
 	
-	<div th:if="${#lists.isEmpty(songsNotInPlaylist)}">
-			All songs already in this playList
-	</div>
-	<div th:if="${not #lists.isEmpty(songsNotInPlaylist)}">
-		<fieldset>
-			Add a song to this playList
-			<form action="@{/AddSong(playlistId=${playlist.id})}" method="POST">
-				<select name=song>
-					<option th:each="s : ${songsNotInPlaylist}" th:value="${s.id}"
-								th:text="${s.songTitle}">song</option>
-				</select>
-				<p><input type="submit" value="submit"></p>
-				<p th:class = "error" th:text="${errorMsg}"></p>
-			</form>
-		</fieldset>
-	</div>
+		<div th:if="${#lists.isEmpty(songsNotInPlaylist)}">
+				All songs already in this playList
+		</div>
+		<div th:if="${not #lists.isEmpty(songsNotInPlaylist)}">
+			<fieldset>
+				Add a song to this playList
+				<form th:action="@{/AddSong(playlistId=${playlist.id})}" method="POST">
+					<select id="song" name="song">
+						<option th:each="s : ${songsNotInPlaylist}"  th:value="${s.id}"
+									th:text="${s.songTitle}">song</option>
+					</select>
+					<p><input type="submit" value="submit"></p>
+					<p th:class = "error" th:text="${errorMsg}"></p>
+				</form>
+			</fieldset>
+		</div>
+	
+	</body>
 	
 </html>
 

@@ -81,13 +81,6 @@ public class CreatePlaylist extends HttpServlet{
 			
 			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(path);
 			dispatcher.forward(request,response);
-			/*
-			String path =  "/WEB-INF/HomePage.html";
-			ServletContext servletContext = getServletContext();
-			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-			ctx.setVariable("errorMsg", error);
-			templateEngine.process(path, ctx, response.getWriter());
-			*/
 		}
 		
 		PlaylistDAO pDao = new PlaylistDAO(connection);

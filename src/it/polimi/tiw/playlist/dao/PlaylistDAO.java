@@ -68,8 +68,8 @@ public class PlaylistDAO {
 	 * @return true if the title is already present, false otherwise
 	 * @throws SQLException
 	 */
-	public boolean findPlaylistByTitle(String title) throws SQLException{
-		String query = "SELECT * FROM playlist WHERE Title = ?";
+	public boolean findPlaylistByTitle(String title , int userId) throws SQLException{
+		String query = "SELECT * FROM playlist WHERE Title = ? AND IdUsername = ?";
 		boolean result = false;
 		ResultSet resultSet = null;
 		PreparedStatement pStatement = null;
@@ -77,6 +77,7 @@ public class PlaylistDAO {
 		try {
 			pStatement = connection.prepareStatement(query);
 			pStatement.setString(1, title);
+			pStatement.setInt(2, userId);
 			resultSet = pStatement.executeQuery();
 			
 			if(resultSet.next()) result = true;
@@ -114,7 +115,7 @@ public class PlaylistDAO {
 		int code = 0;
 		PreparedStatement pStatement = null;
 		
-		if(findPlaylistByTitle(title) == true)//And if findPlaylistByTitle thorw an exception?????
+		if(findPlaylistByTitle(title , userId) == true)//And if findPlaylistByTitle thorw an exception?????
 			return false;
 		
 		try {

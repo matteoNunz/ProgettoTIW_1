@@ -236,7 +236,7 @@ public class CreateSong extends HttpServlet{
 			else {
 				error += "Impossible upload file in the database , try later";
 				request.setAttribute("error1", error);
-				String path = "/GoToHomePage";
+				String path = getServletContext().getContextPath() + "/GoToPlaylistPage";
 
 				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(path);
 				dispatcher.forward(request,response);

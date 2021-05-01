@@ -44,7 +44,7 @@ public class AddSong extends HttpServlet{
 	
 	public void doPost(HttpServletRequest request , HttpServletResponse response)throws ServletException,IOException{
 		String playlistId = request.getParameter("playlistId");
-		String songId = request.getParameter("id");//I'm not sure
+		String songId = request.getParameter("song");//I'm not sure
 		String error = "";
 		int pId = -1;
 		int sId = -1;
@@ -107,7 +107,7 @@ public class AddSong extends HttpServlet{
 				request.setAttribute("error", error);
 			}
 			//Forward to GoToPlaylistPage
-			String path = "/GoToPlaylistPage";
+			String path = getServletContext().getContextPath() + "/GoToPlaylistPage";
 			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(path);
 			dispatcher.forward(request,response);
 		}catch(SQLException e) {

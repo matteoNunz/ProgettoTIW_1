@@ -64,6 +64,7 @@ public class GoToPlaylistPage extends HttpServlet{
 		//Take the playList id
 		String playlistId = request.getParameter("playlistId");
 		String error = "";
+		String error1 = "";
 		int id = -1;
 		
 		//I should do some controls about the user session
@@ -90,7 +91,6 @@ public class GoToPlaylistPage extends HttpServlet{
 				//Check if the playlistId is a number
 				id = Integer.parseInt(playlistId);
 				//Check if the player can access at this playList --> Check if the playList exists
-				System.out.println("Test playlist: " + !pDao.findPlayListById(id, user.getId()));
 				if(!pDao.findPlayListById(id, user.getId())) {
 						error += "PlayList doesn't exist";
 				}
@@ -112,9 +112,12 @@ public class GoToPlaylistPage extends HttpServlet{
 		
 		//The user created this playList
 		
-		//Take the error in case of forward from AddSong class
+		//Take the error in case of forward from AddSong
 		if(request.getAttribute("error") != null)
 			error = (String) request.getAttribute("error");
+		//Take the error in case of forward from GoToSongPage
+		if(request.getAttribute("error1") != null)
+			error1 = (String) request.getAttribute("error1");
 		
 		SongDAO sDao = new SongDAO(connection);
 		
@@ -125,7 +128,7 @@ public class GoToPlaylistPage extends HttpServlet{
 		try {
 			
 			ArrayList<SongDetails> songsInPlaylist = sDao.getSongTiteAndImg(id);
-			ArrayList<SongDetails> songsNotInPlaylist = sDao.getSongsNotInPlaylist(id);
+			ArrayList<SongDetails> songsNotInPlaylist = sDao.getSongsNotInPlaylist(id , user.getId());
 			String title = pDao.findPlayListTitleById(id);
 			
 			Playlist p = new Playlist();
@@ -140,6 +143,7 @@ public class GoToPlaylistPage extends HttpServlet{
 			ctx.setVariable("songsNotInPlaylist", songsNotInPlaylist);
 			ctx.setVariable("playlist", p);
 			ctx.setVariable("errorMsg", error);
+			ctx.setVariable("errorMsg1", error1);
 			templateEngine.process(path , ctx , response.getWriter());
 			
 		}catch(SQLException e) {

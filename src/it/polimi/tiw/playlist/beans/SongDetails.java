@@ -1,7 +1,5 @@
 package it.polimi.tiw.playlist.beans;
 
-import java.sql.Date;//maybe java.util.Date;
-
 public class SongDetails{
 	private int id;
 	private String songTitle;
@@ -11,16 +9,6 @@ public class SongDetails{
 	private String songFile;//where is the music file
 	private String imgFile;
 	private int publicationYear;
-
-	/*public SongDetails(String songTitle , String albumTitle , String singer , String kindOf , String file , Date publicationYear , int id) {
-		this.songTitle = songTitle;
-		this.albumTitle = albumTitle;
-		this.singer = singer;
-		this.kindOf = kindOf;
-		this.songFile = file;
-		this.publicationYear = publicationYear;
-		this.id = id;
-	}*/
 	
 	/**
 	 * 
@@ -58,7 +46,7 @@ public class SongDetails{
 	 * 
 	 * @return the kind of song
 	 */
-	public String getKinfOf() {
+	public String getKindOf() {
 		return kindOf;
 	}
 	
