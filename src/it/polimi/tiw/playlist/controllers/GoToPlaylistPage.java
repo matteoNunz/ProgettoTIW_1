@@ -63,9 +63,11 @@ public class GoToPlaylistPage extends HttpServlet{
 	public void doGet(HttpServletRequest request , HttpServletResponse response)throws ServletException,IOException{
 		//Take the playList id
 		String playlistId = request.getParameter("playlistId");
+		String section = request.getParameter("section");//Which songs need to be shown
 		String error = "";
 		String error1 = "";
 		int id = -1;
+		int block = 0;
 		
 		//I should do some controls about the user session
 		HttpSession s = request.getSession();
@@ -79,8 +81,8 @@ public class GoToPlaylistPage extends HttpServlet{
 	    User user = (User) s.getAttribute("user");
 	    
 		//Check if playlistId is valid
-		if(playlistId.isEmpty() || playlistId == null)
-			error += "Playlist not defined;";
+		if(playlistId == null || playlistId.isEmpty() || section == null || section.isEmpty())
+			error += "Playlist e/o section not defined;";
 		
 		//Check the follow only if the id is valid
 		if(error.equals("")) {
@@ -90,12 +92,16 @@ public class GoToPlaylistPage extends HttpServlet{
 			try {
 				//Check if the playlistId is a number
 				id = Integer.parseInt(playlistId);
+				//Check if section is a number
+				block = Integer.parseInt(section);
 				//Check if the player can access at this playList --> Check if the playList exists
 				if(!pDao.findPlayListById(id, user.getId())) {
 						error += "PlayList doesn't exist";
 				}
+				if(block < 0)
+					block = 0;
 			}catch(NumberFormatException e) {
-				error += "Playlist not defined;";
+				error += "Playlist e/o section not defined;";
 			}catch(SQLException e) {
 				error += "Impossible comunicate with the data base;";
 			}
@@ -131,6 +137,22 @@ public class GoToPlaylistPage extends HttpServlet{
 			ArrayList<SongDetails> songsNotInPlaylist = sDao.getSongsNotInPlaylist(id , user.getId());
 			String title = pDao.findPlayListTitleById(id);
 			
+			boolean next = true;
+			
+			if(block > songsInPlaylist.size()) {
+				block = (songsInPlaylist.size() / 5);
+			}
+			if(block == (songsInPlaylist.size() / 5))
+				next = false;
+			
+			ArrayList<SongDetails> songs = new ArrayList<SongDetails>();
+			
+			if(songsInPlaylist.size() > 0) {
+				for(int i = (block * 5) ; i < (block * 5 + 5) && i < songsInPlaylist.size(); i++){
+					songs.add(songsInPlaylist.get(i));
+				}	
+			}		
+			
 			Playlist p = new Playlist();
 			p.setId(id);
 			p.setTitle(title);
@@ -139,9 +161,12 @@ public class GoToPlaylistPage extends HttpServlet{
 			ServletContext servletContext = getServletContext();
 			final WebContext ctx = new WebContext(request , response , servletContext , request.getLocale());
 			ctx.setVariable("user" , user);
-			ctx.setVariable("songsInPlaylist", songsInPlaylist);
+			ctx.setVariable("songsInPlaylist", songs);
 			ctx.setVariable("songsNotInPlaylist", songsNotInPlaylist);
 			ctx.setVariable("playlist", p);
+			ctx.setVariable("block", block);
+			ctx.setVariable("next", next);
+			
 			ctx.setVariable("errorMsg", error);
 			ctx.setVariable("errorMsg1", error1);
 			templateEngine.process(path , ctx , response.getWriter());

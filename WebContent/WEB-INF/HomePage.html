@@ -25,7 +25,7 @@
 				</thead>
 				<tbody>
 					<tr th:each="p : ${playlists}">
-						<td><a th:href="@{GoToPlayListPage(playlistId=${p.id})}">
+						<td><a th:href="@{GoToPlayListPage(playlistId=${p.id} , section=0)}">
 							<span th:text="${p.title}"></span></a>
 						</td>
 						<td><span th:text="${#dates.format(p.creationDate , 'dd.MM.yyyy')}"></span></td>

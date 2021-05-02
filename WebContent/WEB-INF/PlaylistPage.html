@@ -39,6 +39,14 @@
 					</tr>
 				</tbody>
 			</table>
+			
+			<div th:if="(${block} > 0)">
+				<a th:href="@{GoToPlaylistPage(playlistId=${playlist.id} , section=(${block} - 1))}">Before</a>
+			</div>
+						<div th:if="(${next} == true)">
+				<a th:href="@{GoToPlaylistPage(playlistId=${playlist.id} , section=(${block} + 1))}">Next</a>
+			</div>
+			
 		</div>	
 		<p th:class = "error" th:text="${errorMsg1}"></p>
 		<br><br>
@@ -58,6 +66,12 @@
 					<p th:class = "error" th:text="${errorMsg}"></p>
 				</form>
 			</fieldset>
+		</div>
+		
+		<br><br><br>
+		
+		<div>
+			<a th:href="@{GoToHomePage}">Home page</a>
 		</div>
 	
 	</body>
