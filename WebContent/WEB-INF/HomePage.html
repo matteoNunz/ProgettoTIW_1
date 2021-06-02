@@ -5,7 +5,7 @@
 		<meta charset="UTF-8">
 		<title> Home </title>
 		<link rel="stylesheet" type="text/css" media="all"
-			href="../CSS/mystyle.css" th:href="@{../../css/mystyle.css}" />
+			href="../CSS/mystyle.css" th:href="@{/CSS/mystyle.css}" />
 	</head>
 
 	<body>
@@ -16,7 +16,7 @@
 			No playList yet
 		</div>
 		<div th:if="${not #lists.isEmpty(playlists)}">
-			<table border="1">
+			<table>
 				<thead>
 					<tr>
 						<th>PlayList name</th>
@@ -36,7 +36,7 @@
 		</div>
 		
 		<br><br>
-		<fieldset class="field">
+		<fieldset>
 			<form th:action="@{/CreatePlaylist}" method="POST">
 				Create a new playList<br>
 				<p>Title: <input type="text" id="title" name="title" required></p>
@@ -45,7 +45,7 @@
 			</form>
 		</fieldset>
 		<br><br>
-		<fieldset class="field">
+		<fieldset class="createSongField">
 			<form th:action="@{/CreateSong}" method="POST" enctype="multipart/form-data">
 				Add a new song in your DataBase<br>
 				<p>Title: 					<input type="text" id="title" name="title" required></p>

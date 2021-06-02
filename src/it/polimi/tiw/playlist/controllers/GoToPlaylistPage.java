@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -133,7 +134,7 @@ public class GoToPlaylistPage extends HttpServlet{
 		//Take the titles and the image paths
 		try {
 			
-			ArrayList<SongDetails> songsInPlaylist = sDao.getSongTiteAndImg(id);
+			ArrayList<SongDetails> songsInPlaylist = sDao.getSongTitleAndImg(id);
 			ArrayList<SongDetails> songsNotInPlaylist = sDao.getSongsNotInPlaylist(id , user.getId());
 			String title = pDao.findPlayListTitleById(id);
 			
@@ -147,18 +148,35 @@ public class GoToPlaylistPage extends HttpServlet{
 			
 			ArrayList<SongDetails> songs = new ArrayList<SongDetails>();
 			
+			ServletContext servletContext = getServletContext();
+			String imagePathHelp = servletContext.getInitParameter("albumImgPathHelp");
+			
 			if(songsInPlaylist.size() > 0) {
 				for(int i = (block * 5) ; i < (block * 5 + 5) && i < songsInPlaylist.size(); i++){
-					songs.add(songsInPlaylist.get(i));
+					SongDetails song = songsInPlaylist.get(i);
+					
+					
+					//song.setImgFile(Base64.encodeBase64String(song.getImageBytes()));
+					//System.out.println("Bytes converted in string:" + song.getImgFile());
+					
+					//File file = new File(song.getImgFile());
+					//String imgName = file.getName();
+					
+					//song.setImgFile(imagePathHelp + imgName);//Update the position 
+					//song.setImgFile("/images/1_CatturaFireworks");
+					
+					songs.add(song);
 				}	
-			}		
+			}
+			
+			
 			
 			Playlist p = new Playlist();
 			p.setId(id);
 			p.setTitle(title);
 			
 			String path = "/WEB-INF/PlaylistPage.html";
-			ServletContext servletContext = getServletContext();
+			//ServletContext servletContext = getServletContext();
 			final WebContext ctx = new WebContext(request , response , servletContext , request.getLocale());
 			ctx.setVariable("user" , user);
 			ctx.setVariable("songsInPlaylist", songs);

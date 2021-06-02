@@ -23,10 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
-
 import it.polimi.tiw.playlist.beans.User;
 import it.polimi.tiw.playlist.dao.SongDAO;
 
@@ -44,7 +40,9 @@ public class CreateSong extends HttpServlet{
 		
 		//Initializing the folder where images and mp3 files will be uploaded
 		imgFolderPath = context.getInitParameter("albumImgPath");
+		//imgFolderPath = context.getInitParameter("temporaryAlbumImgPath");
 		mp3FolderPath = context.getInitParameter("songFilePath");
+		//mp3FolderPath = context.getInitParameter("temporarySongFilePath");
 		
 		try {
 			//Initializing the connection
@@ -156,11 +154,15 @@ public class CreateSong extends HttpServlet{
 		System.out.println("Filename music: " + fileNameSong);
 		
 		//Create the final path for images adding the user id in the start to avoid error in case of duplicate name;
-		String outputPathImg = imgFolderPath + user.getId() + "_" + fileNameImg;
+		fileNameImg = user.getId() + "_" + fileNameImg;
+		//imgFolderPath = getServletContext().getInitParameter("temporaryAlbumImgPath");
+		//imgFolderPath = getServletContext().getRealPath(imgFolderPath);
+		String outputPathImg = imgFolderPath + fileNameImg;
 		System.out.println("Output path img: " + outputPathImg);
 		
 		//Create the final part for music files adding the user id in the start to avoid error in case of duplicate name;
-		String outputPathSong = mp3FolderPath + user.getId()  + "_" + fileNameSong;
+		fileNameSong = user.getId()  + "_" + fileNameSong;
+		String outputPathSong = mp3FolderPath + fileNameSong;
 		System.out.println("Output path song: " + outputPathSong);
 		
 		//Check if the final path are not too long
@@ -174,9 +176,14 @@ public class CreateSong extends HttpServlet{
 		if(tempFile.exists())
 			error += "Image name already exists;";
 		tempFile = new File(outputPathSong);
-		if(tempFile.exists())
+		/*if(tempFile.exists())
 			error += "Song name already exists; ";
-		System.out.println("Error is: " + error);
+		System.out.println("Error is: " + error);*/
+		
+		//Obtains input stream of the upload the image
+		InputStream inputStreamImg = albumImg.getInputStream();
+		//Obtains input stream of the upload the song
+		InputStream inputStreamSong = albumImg.getInputStream();
 		
 		//If an error occurred, redirect with errorMsg1 to the template engine  
 		if(!error.equals("")) {
@@ -190,9 +197,10 @@ public class CreateSong extends HttpServlet{
 		
 		//Save the image
 		File fileImg = new File(outputPathImg);
+		
 
 		try (InputStream fileContent = albumImg.getInputStream()) {
-			
+		
 			Files.copy(fileContent, fileImg.toPath());
 			System.out.println("File saved correctly!");
 
@@ -227,7 +235,7 @@ public class CreateSong extends HttpServlet{
 		SongDAO sDao = new SongDAO(connection);
 		
 		try {
-			boolean result = sDao.createSongAndAlbum(user.getId() , songTitle, genre, albumTitle, singer, publicationYear, outputPathImg, outputPathSong);
+			boolean result = sDao.createSongAndAlbum(user.getId() , songTitle, genre, albumTitle, singer, publicationYear, fileNameImg , fileNameSong , inputStreamImg , inputStreamSong);
 			
 			if(result == true) {
 				String path = getServletContext().getContextPath() + "/GoToHomePage";

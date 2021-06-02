@@ -1,5 +1,35 @@
 .error {color:red;}
-.field {width: 0;}
-fieldset{
-	margin-right: 50px;
+
+.songsTable {
+	margin-left: auto;
+  	margin-right: auto;
 }
+
+fieldset{
+	margin-right: 60px;
+	width: 0;
+}
+
+.createSongField {
+	margin: -24% -80% 0% 25% ;
+}
+
+img{
+	height: 100px;
+	width: 100px;
+}
+
+table , th , td {
+  	border: 1px solid black;
+}
+
+.simpleTable {
+	border: 0px;
+}
+
+td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+
