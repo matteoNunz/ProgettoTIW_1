@@ -40,9 +40,7 @@ public class CreateSong extends HttpServlet{
 		
 		//Initializing the folder where images and mp3 files will be uploaded
 		imgFolderPath = context.getInitParameter("albumImgPath");
-		//imgFolderPath = context.getInitParameter("temporaryAlbumImgPath");
 		mp3FolderPath = context.getInitParameter("songFilePath");
-		//mp3FolderPath = context.getInitParameter("temporarySongFilePath");
 		
 		try {
 			//Initializing the connection
@@ -71,8 +69,13 @@ public class CreateSong extends HttpServlet{
 		Part albumImg = request.getPart("albumImg");
 		Part songFile = request.getPart("songFile");
 		
-		//I should do some controls about the user session
 		HttpSession s = request.getSession();
+		//Check if the session is still valid
+		if (s.isNew() || s.getAttribute("user") == null) {
+			response.sendRedirect("/TIW-PlayList-HTML-Pure/login.html");
+			return;
+		}
+		
 		User user = (User) s.getAttribute("user");
 
 		String error = "";
@@ -105,7 +108,6 @@ public class CreateSong extends HttpServlet{
 		
 		//Take the type of the image file uploaded : image/png
 		String contentTypeImg = albumImg.getContentType();
-		System.out.println("Image type is: " + contentTypeImg);
 
 		//Check if the type is an image
 		if(!contentTypeImg.startsWith("image"))
@@ -115,12 +117,10 @@ public class CreateSong extends HttpServlet{
 			if(albumImg.getSize() > 1024000) {
 				error += "Image size is too big;";
 			}	
-			System.out.println("Image size is: " + albumImg.getSize());
 		}
 		
 		//Take the type of the music file uploaded : audio/mpeg
 		String contentTypeMusic = songFile.getContentType();
-		System.out.println("Music type is: " + contentTypeMusic);
 		
 		//Check the type of the music file uploaded
 		if(!contentTypeMusic.startsWith("audio"))
@@ -130,7 +130,6 @@ public class CreateSong extends HttpServlet{
 			if(songFile.getSize() > 10240000) {
 				error += "Song size is too big;";
 			}	
-			System.out.println("Song size is: " + songFile.getSize());
 		}
 		
 		//If an error occurred, redirect with errorMsg1 to the template engine  
@@ -145,25 +144,17 @@ public class CreateSong extends HttpServlet{
 		
 		//Take the name of the image uploaded
 		String fileNameImg = Path.of(albumImg.getSubmittedFileName()).getFileName().toString();
-		System.out.println("Test image: " + albumImg.getSubmittedFileName());
-		System.out.println("Test 1: "+ Paths.get(albumImg.getSubmittedFileName()));
-		System.out.println("Filename image: " + fileNameImg);
 		
 		//Take the name of the song uploaded
 		String fileNameSong = Paths.get(songFile.getSubmittedFileName()).getFileName().toString();
-		System.out.println("Filename music: " + fileNameSong);
 		
 		//Create the final path for images adding the user id in the start to avoid error in case of duplicate name;
 		fileNameImg = user.getId() + "_" + fileNameImg;
-		//imgFolderPath = getServletContext().getInitParameter("temporaryAlbumImgPath");
-		//imgFolderPath = getServletContext().getRealPath(imgFolderPath);
 		String outputPathImg = imgFolderPath + fileNameImg;
-		System.out.println("Output path img: " + outputPathImg);
 		
 		//Create the final part for music files adding the user id in the start to avoid error in case of duplicate name;
 		fileNameSong = user.getId()  + "_" + fileNameSong;
 		String outputPathSong = mp3FolderPath + fileNameSong;
-		System.out.println("Output path song: " + outputPathSong);
 		
 		//Check if the final path are not too long
 		if(fileNameSong.length() > 255)
@@ -175,15 +166,11 @@ public class CreateSong extends HttpServlet{
 		File tempFile = new File(outputPathImg);
 		if(tempFile.exists())
 			error += "Image name already exists;";
-		tempFile = new File(outputPathSong);
-		/*if(tempFile.exists())
-			error += "Song name already exists; ";
-		System.out.println("Error is: " + error);*/
 		
-		//Obtains input stream of the upload the image
-		InputStream inputStreamImg = albumImg.getInputStream();
-		//Obtains input stream of the upload the song
-		InputStream inputStreamSong = albumImg.getInputStream();
+		tempFile = new File(outputPathSong);
+		if(tempFile.exists())
+			error += "Song name already exists; ";
+		System.out.println("Error is: " + error);
 		
 		//If an error occurred, redirect with errorMsg1 to the template engine  
 		if(!error.equals("")) {
@@ -198,12 +185,8 @@ public class CreateSong extends HttpServlet{
 		//Save the image
 		File fileImg = new File(outputPathImg);
 		
-
 		try (InputStream fileContent = albumImg.getInputStream()) {
-		
 			Files.copy(fileContent, fileImg.toPath());
-			System.out.println("File saved correctly!");
-
 		} catch (Exception e) {
 			error += "Error in uploading the image;";
 		}
@@ -212,10 +195,7 @@ public class CreateSong extends HttpServlet{
 		File fileSong = new File(outputPathSong);
 		
 		try (InputStream fileContent = albumImg.getInputStream()) {
-			
 			Files.copy(fileContent, fileSong.toPath());
-			System.out.println("File saved correctly!");
-
 		} catch (Exception e) {
 			error += "Error in uploading the music file;\n";
 		}
@@ -235,7 +215,7 @@ public class CreateSong extends HttpServlet{
 		SongDAO sDao = new SongDAO(connection);
 		
 		try {
-			boolean result = sDao.createSongAndAlbum(user.getId() , songTitle, genre, albumTitle, singer, publicationYear, fileNameImg , fileNameSong , inputStreamImg , inputStreamSong);
+			boolean result = sDao.createSongAndAlbum(user.getId() , songTitle, genre, albumTitle, singer, publicationYear, fileNameImg , fileNameSong);
 			
 			if(result == true) {
 				String path = getServletContext().getContextPath() + "/GoToHomePage";

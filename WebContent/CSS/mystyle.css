@@ -23,11 +23,6 @@ fieldset{
 	margin:auto;
 }
 
-.createSongField {
-	position: relative;
-	margin: -23% -50% 0% 50% ;
-}
-
 img{
 	height: 100px;
 	width: 100px;
@@ -59,6 +54,21 @@ body {
 .createPlaylistField {
 	position: relative;
 	margin: 0% 45% 0% 26% ;
+}
+
+.createSongField {
+	position: fixed;
+	margin: 0% -50% 0% 50% ;
+}
+
+.logout {
+	/*
+	position: fixed;
+	margin-bottom: 25%;
+	margin-top: -30%;
+	margin-left: 90%; */
+	text-align: right;
+	margin-right: 10%;
 }
 
 

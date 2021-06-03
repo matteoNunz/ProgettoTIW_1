@@ -49,7 +49,6 @@ public class AddSong extends HttpServlet{
 		int pId = -1;
 		int sId = -1;
 		
-		//I should do some controls about the user session
 		HttpSession s = request.getSession();
 		
 		if (s.isNew() || s.getAttribute("user") == null) {

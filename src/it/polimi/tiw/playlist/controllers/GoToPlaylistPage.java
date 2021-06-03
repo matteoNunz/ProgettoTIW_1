@@ -70,7 +70,7 @@ public class GoToPlaylistPage extends HttpServlet{
 		int id = -1;
 		int block = 0;
 		
-		//I should do some controls about the user session
+		//TODO use a filter
 		HttpSession s = request.getSession();
 		
 		if (s.isNew() || s.getAttribute("user") == null) {
@@ -142,51 +142,30 @@ public class GoToPlaylistPage extends HttpServlet{
 			ArrayList<SongDetails> songsNotInPlaylist = sDao.getSongsNotInPlaylist(id , user.getId());
 			String title = pDao.findPlayListTitleById(id);
 			
-			//TODO check the functioning of block -> problem with before link in the html
-			//TODO it doesn't take songs in order of date -> with the first section it works
-			
 			boolean next = false;
 			
 			if(block * 5 + 5 > songsInPlaylist.size()) {
 				block = (songsInPlaylist.size() / 5);
 			}
-			//if(block == (songsInPlaylist.size() / 5))
-			//	next = false;
 			if((block * 5 + 5) < songsInPlaylist.size()) {
 				next = true;
 			}
 			
 			ArrayList<SongDetails> songs = new ArrayList<SongDetails>();
 			
-			ServletContext servletContext = getServletContext();
-			String imagePathHelp = servletContext.getInitParameter("albumImgPathHelp");
-			
 			if(songsInPlaylist.size() > 0) {
 				for(int i = (block * 5) ; i < (block * 5 + 5) && i < songsInPlaylist.size(); i++){
 					SongDetails song = songsInPlaylist.get(i);
-					
-					
-					//song.setImgFile(Base64.encodeBase64String(song.getImageBytes()));
-					//System.out.println("Bytes converted in string:" + song.getImgFile());
-					
-					//File file = new File(song.getImgFile());
-					//String imgName = file.getName();
-					
-					//song.setImgFile(imagePathHelp + imgName);//Update the position 
-					//song.setImgFile("/images/1_CatturaFireworks");
-					
 					songs.add(song);
 				}	
 			}
-			
-			
 			
 			Playlist p = new Playlist();
 			p.setId(id);
 			p.setTitle(title);
 			
 			String path = "/WEB-INF/PlaylistPage.html";
-			//ServletContext servletContext = getServletContext();
+			ServletContext servletContext = getServletContext();
 			final WebContext ctx = new WebContext(request , response , servletContext , request.getLocale());
 			ctx.setVariable("user" , user);
 			ctx.setVariable("songsInPlaylist", songs);

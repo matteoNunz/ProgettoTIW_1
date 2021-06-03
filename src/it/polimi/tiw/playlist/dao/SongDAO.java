@@ -83,15 +83,15 @@ public class SongDAO {
 	 * @return true if the method created correctly both album and song , false otherwise
 	 * @throws SQLException
 	 */
-	public boolean createSongAndAlbum(int userId , String songTitle , String genre , String albumTitle , String singer , int publicationYear , String outputPathImg , String outputPathSong , InputStream image , InputStream song) 
+	public boolean createSongAndAlbum(int userId , String songTitle , String genre , String albumTitle , String singer , int publicationYear , String outputPathImg , String outputPathSong) 
 			throws SQLException{
 		
 		boolean result = false;
 		try {
 			connection.setAutoCommit(false);
 			
-			int albumId = createAlbum(albumTitle , singer , publicationYear , outputPathImg , image);
-			result = createSong(userId , songTitle , genre , albumId , outputPathSong , song);
+			int albumId = createAlbum(albumTitle , singer , publicationYear , outputPathImg);
+			result = createSong(userId , songTitle , genre , albumId , outputPathSong);
 			
 			connection.commit();
 		}catch(SQLException e){
@@ -113,7 +113,7 @@ public class SongDAO {
 	 * @return the id of the album created or already present
 	 * @throws SQLException
 	 */
-	private int createAlbum(String albumTitle , String singer , int publicationYear , String outputPathImg , InputStream image) throws SQLException{
+	private int createAlbum(String albumTitle , String singer , int publicationYear , String outputPathImg) throws SQLException{
 		
 		int albumId = 0;
 		albumId = findAlbumId(albumTitle , singer , publicationYear , outputPathImg);
@@ -121,7 +121,7 @@ public class SongDAO {
 		if(albumId != 0)
 			return albumId;
 		
-		String query = "INSERT INTO album (Title , Image , Singer , PublicationYear , ImageBlob) VALUES (? , ? , ? , ? , ?)";
+		String query = "INSERT INTO album (Title , Image , Singer , PublicationYear) VALUES (? , ? , ? , ?)";
 		PreparedStatement pStatement = null;
 		
 		try {
@@ -130,8 +130,6 @@ public class SongDAO {
 			pStatement.setString(2, outputPathImg);
 			pStatement.setString(3, singer);
 			pStatement.setInt(4, publicationYear);
-			if(image != null)
-				pStatement.setBlob(5 , image);
 			
 			int code = pStatement.executeUpdate();
 			
@@ -161,8 +159,8 @@ public class SongDAO {
 	 * @return true if the update of the DB went good , false otherwise
 	 * @throws SQLException
 	 */
-	private boolean createSong(int userId , String songTitle , String genre , int albumId , String outputPathSong , InputStream song) throws SQLException{
-		String query = "INSERT INTO song (IdUser , KindOf , MusicFile , SongTitle , IdAlbum , SongBlob) VALUES (? , ? , ? , ? , ? , ?)";
+	private boolean createSong(int userId , String songTitle , String genre , int albumId , String outputPathSong) throws SQLException{
+		String query = "INSERT INTO song (IdUser , KindOf , MusicFile , SongTitle , IdAlbum) VALUES (? , ? , ? , ? , ?)";
 		PreparedStatement pStatement = null;
 		int code = 0;
 		
@@ -173,8 +171,6 @@ public class SongDAO {
 			pStatement.setString(3, outputPathSong);
 			pStatement.setString(4, songTitle);
 			pStatement.setInt(5, albumId);
-			if(song != null)
-				pStatement.setBlob(6 ,  song);
 			
 			code = pStatement.executeUpdate();
 		}catch(SQLException e) {
@@ -211,32 +207,14 @@ public class SongDAO {
 			resultSet = pStatement.executeQuery();
 			
 			while(resultSet.next()) {
-				System.out.println("Dentro al while");
 				SongDetails song = new SongDetails();
 				
-				Blob blob = resultSet.getBlob("ImageBlob");
-				song.setImageBlob(blob);
-				System.out.println("Blob letto");
-				InputStream image = blob.getBinaryStream();
-				System.out.println("InputStream letto");
-				File imageFile = new File("image");
-				System.out.println("File aperto");
-				
-				//song.setImageBytes(blob.getBytes(1, (int) blob.length()));
-				song.setImageFile(imageFile);
-				//song.setImage(image);
-				//song.setFileStream();
-				songs.add(song);
-				
+				//Read the image from the data base
 				song.setId(resultSet.getInt("song.Id"));
 				song.setSongTitle(resultSet.getString("song.SongTitle"));
 				song.setImgFile(resultSet.getString("album.Image"));//Set the name of the image file
-				//Read the image from the data base
-				System.out.println("Finito la lettura base");
-
-				System.out.println("Fine while");
+				songs.add(song);
 			}
-			
 		}catch(SQLException e) {
 			throw new SQLException();
 		}finally {
@@ -388,6 +366,50 @@ public class SongDAO {
 			}
 		}
 		return song;
+	}
+
+	/**
+	 * Method that verify if a song belongs to a specific user
+	 * @param title is the name of the song file
+	 * @param userId is the user id
+	 * @return true if the song belongs, false otherwise
+	 * @throws SQLException
+	 */
+	public boolean findSongByUser(String title , int userId) throws SQLException{
+		String query = "SELECT * FROM song JOIN album WHERE album.Image = ? AND song.IdUser = ?";
+		boolean result = false;
+		PreparedStatement pStatement = null;
+		ResultSet resultSet = null;
+		
+		try {
+			pStatement = connection.prepareStatement(query);
+			pStatement.setString(1, title);
+			pStatement.setInt(2, userId);
+			
+			resultSet = pStatement.executeQuery();
+			
+			if(resultSet.next())
+				result = true;
+			
+		}catch(SQLException e) {
+			throw new SQLException();
+		}finally {
+			try {
+				if(resultSet != null) {
+					resultSet.close();
+				}
+			}catch(Exception e1) {
+				throw new SQLException(e1);
+			}
+			try {
+				if(pStatement != null) {
+					pStatement.close();
+				}
+			}catch(Exception e2) {
+				throw new SQLException(e2);
+			}
+		}	
+		return result;
 	}
 	
 }

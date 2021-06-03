@@ -29,20 +29,6 @@
 	<param-value>C:\\Users\\Matteo Nunziante\\Documents\\TIWFile\\SongFile\\</param-value>
   </context-param>
 
-  <context-param>
-	<param-name>temporaryAlbumImgPath</param-name>
-	<param-value>/TIW-PlayList-HTML-Pure/WebContent/WEB-INF/Resources/Images/</param-value>
-  </context-param>
-  <context-param>
-	<param-name>temporarySongFilePath</param-name>
-	<param-value>/TIW-PlayList-HTML-Pure/WebContent/WEB-INF/Resources/Songs/</param-value>
-  </context-param>
-
-
-  <context-param>
-	<param-name>albumImgPathHelp</param-name>
-	<param-value>/WebContent/Resources/Images/</param-value>
-  </context-param>
 
   <!--Welcome files-->
   <welcome-file-list>

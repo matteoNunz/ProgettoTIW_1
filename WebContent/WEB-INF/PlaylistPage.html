@@ -30,17 +30,12 @@
 								<tbody>
 									<tr>
 										<td>
-											<!-- <img th:src="@{${s.imgFile}}"/>  --> 
-											<!-- <img src="data:image/png;base64,base64_encode(${s.imageblob})"/> -->
-											<!-- <img th:src="'data:image/png;base64,'+ ${s.imgFile}" /> -->
-											<!-- <img th:src="'data:image/png;base64,'+ ${s.imgFile}" /> -->
-											<!-- <img th:src='"GetImage/" + th:text="@{${s.imgFile}}"' height=100 width=100 /> -->
 											<img th:src="@{GetImage/{image}(image=${s.imgFile})}" />
 										</td>
 									</tr>
 									<tr>
 										<td>
-											<a th:href="@{GoToSongPage(songId=${s.id} , playlistId=${playlist.id})}">
+											<a th:href="@{GoToSongPage(songId=${s.id} , playlistId=${playlist.id} , section=${block})}">
 											<span th:text="${s.songTitle}"></span></a>
 										</td>
 									</tr>
@@ -85,7 +80,8 @@
 			<a th:href="@{GoToHomePage}">Home page</a>
 		</div>
 	
-		<div class="logout">
+		<br><br>
+		<div>
 			<a th:href="@{Logout}">Logout</a>
 		</div>
 		
