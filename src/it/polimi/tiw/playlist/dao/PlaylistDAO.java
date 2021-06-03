@@ -68,15 +68,16 @@ public class PlaylistDAO {
 	 * @return true if the title is already present, false otherwise
 	 * @throws SQLException
 	 */
-	public boolean findPlaylistByTitle(String title) throws SQLException{
+	public boolean findPlaylistByTitle(String title , int userId) throws SQLException{
+		String query = "SELECT * FROM playlist WHERE Title = ? AND IdUsername = ?";
 		boolean result = false;
-		String query = "SELECT * FROM playlist WHERE Title = ?";
 		ResultSet resultSet = null;
 		PreparedStatement pStatement = null;
 		
 		try {
 			pStatement = connection.prepareStatement(query);
 			pStatement.setString(1, title);
+			pStatement.setInt(2, userId);
 			resultSet = pStatement.executeQuery();
 			
 			if(resultSet.next()) result = true;
@@ -114,7 +115,7 @@ public class PlaylistDAO {
 		int code = 0;
 		PreparedStatement pStatement = null;
 		
-		if(findPlaylistByTitle(title) == true)//And if findPlaylistByTitle thorw an exception?????
+		if(findPlaylistByTitle(title , userId) == true)//And if findPlaylistByTitle thorw an exception?????
 			return false;
 		
 		try {
@@ -136,6 +137,126 @@ public class PlaylistDAO {
 		}
 		return (code > 0);
 	}
+	
+	/**
+	 * Method that find if a playList and a user are connected
+	 * @param playlistId is the id of the playList
+	 * @param userId is the id of the user
+	 * @return true if the user created this playList, false otherwise
+	 * @throws SQLException
+	 */
+	public boolean findPlayListById(int playlistId , int userId) throws SQLException{
+		String query = "SELECT * FROM playlist WHERE Id = ? AND IdUserName = ?";
+		boolean result = false;
+		ResultSet resultSet = null;
+		PreparedStatement pStatement = null;
+		
+		try {
+			pStatement = connection.prepareStatement(query);
+			pStatement.setInt(1 , playlistId);
+			pStatement.setInt(2 , userId);
+			
+			resultSet = pStatement.executeQuery();
+			
+			if(resultSet.next()) {
+				result = true;
+			}
+		}catch(SQLException e) {
+			throw new SQLException();
+		}finally{
+			try {
+				if(resultSet != null) {
+					resultSet.close();
+				}
+			}catch(Exception e1) {
+				throw new SQLException(e1);
+			}
+			try {
+				if(pStatement != null) {
+					pStatement.close();
+				}
+			}catch(Exception e2) {
+				throw new SQLException(e2);
+		    }
+		}
+		return result;
+	}
+	
+	/**
+	 * Method that find the title of a playList by its id
+	 * @param playlistId is the unique id of the playList
+	 * @return a String containing the title
+	 * @throws SQLException
+	 */
+	public String findPlayListTitleById(int playlistId) throws SQLException{
+		String query = "SELECT * FROM playlist WHERE Id = ?";
+		String result = null;
+		ResultSet resultSet = null;
+		PreparedStatement pStatement = null;
+		
+		try {
+			pStatement = connection.prepareStatement(query);
+			pStatement.setInt(1 , playlistId);
+			
+			resultSet = pStatement.executeQuery();
+			
+			if(resultSet.next()) {
+				result = resultSet.getString("Title");
+			}
+		}catch(SQLException e) {
+			throw new SQLException();
+		}finally{
+			try {
+				if(resultSet != null) {
+					resultSet.close();
+				}
+			}catch(Exception e1) {
+				throw new SQLException(e1);
+			}
+			try {
+				if(pStatement != null) {
+					pStatement.close();
+				}
+			}catch(Exception e2) {
+				throw new SQLException(e2);
+		    }
+		}
+		return result;
+	}
+	
+	/**
+	 * Method that add a song to a playList in the "contains" schema 
+	 * Maybe this method will go in a future bean called contains 
+	 * @param pId is the playList id
+	 * @param sId is the song id
+	 * @return true if the update went well, false otherwise
+	 * @throws SQLException
+	 */
+	public boolean addSong(int pId , int sId) throws SQLException{
+		String query = "INSERT INTO contains (IdSong , IdPlaylist) VALUES (? , ?)";
+		int code = 0;
+		PreparedStatement pStatement = null;
+		
+		try {
+			pStatement = connection.prepareStatement(query);
+			pStatement.setInt(1, sId);
+			pStatement.setInt(2, pId);
+			
+			code = pStatement.executeUpdate();
+		}catch(SQLException e) {
+			throw new SQLException();
+		}finally {
+			try {
+				if(pStatement != null) {
+					pStatement.close();
+				}
+			}catch(Exception e2) {
+				throw new SQLException(e2);
+		    }
+		}
+		return (code > 0);
+	}
+	
 }
 
 

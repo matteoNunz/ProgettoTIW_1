@@ -33,6 +33,8 @@ public class CheckLogin extends HttpServlet{
 	public void init() {
 		ServletContext context = getServletContext();
 		
+		System.out.println(getServletContext().getRealPath("/Images"));
+		
 		//Initializing the template engine
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(context);
 		templateResolver.setTemplateMode(TemplateMode.HTML);

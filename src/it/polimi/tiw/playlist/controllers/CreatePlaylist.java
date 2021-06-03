@@ -81,13 +81,6 @@ public class CreatePlaylist extends HttpServlet{
 			
 			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(path);
 			dispatcher.forward(request,response);
-			/*
-			String path =  "/WEB-INF/HomePage.html";
-			ServletContext servletContext = getServletContext();
-			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
-			ctx.setVariable("errorMsg", error);
-			templateEngine.process(path, ctx, response.getWriter());
-			*/
 		}
 		
 		PlaylistDAO pDao = new PlaylistDAO(connection);
@@ -106,14 +99,6 @@ public class CreatePlaylist extends HttpServlet{
 
 				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(path);
 				dispatcher.forward(request,response);
-				/*
-				ServletContext servletContext = getServletContext();
-				final WebContext ctx = new WebContext(request , response , servletContext , request.getLocale());
-				error += "This title " + title + "is already used";
-				ctx.setVariable("errorMsg", error);
-				ctx.setVariable("user", user);
-				templateEngine.process(path, ctx , response.getWriter());
-				*/
 			}
 		}catch(SQLException e) {
 			e.printStackTrace();

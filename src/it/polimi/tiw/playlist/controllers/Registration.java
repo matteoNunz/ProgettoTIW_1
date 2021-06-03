@@ -111,7 +111,9 @@ public class Registration extends HttpServlet{
 			result = userDao.addUser(userName, password);
 			
 			if(result == true) {
-				response.sendRedirect("/TIW-PlayList-HTML-Pure/login.html");
+				//Redirect to the login page
+				String path = getServletContext().getContextPath() +  "/login.html";
+				response.sendRedirect(path);
 			}
 			else {
 				String path = "registration.html";
