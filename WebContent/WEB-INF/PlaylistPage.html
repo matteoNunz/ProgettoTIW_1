@@ -5,7 +5,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title> PlayList page </title>
-		<link rel="stylesheet" type="text/css" media="all" href="../CSS/mystyle.css" th:href="@{/CSS/mystyle.css}" />
+		<link rel="stylesheet" type="text/css" media="all" href="CSS/mystyle.css" th:href="@{/CSS/mystyle.css}" />
 	</head>
 	
 	<body>
@@ -40,7 +40,7 @@
 									</tr>
 									<tr>
 										<td>
-											<a th:href="@{GoToSongPage(songId=${s.id})}">
+											<a th:href="@{GoToSongPage(songId=${s.id} , playlistId=${playlist.id})}">
 											<span th:text="${s.songTitle}"></span></a>
 										</td>
 									</tr>
@@ -51,11 +51,11 @@
 				</tbody>
 			</table>
 			
-			<div th:if="(${block} > 0)">
-				<a th:href="@{GoToPlayListPage(playlistId=${playlist.id} , section=(${block} - 1))}">Before</a>
+			<div th:class="before" th:if="(${block} > 0)">
+				<a th:class="before" th:href="@{GoToPlayListPage(playlistId=${playlist.id} , section=(${block} - 1))}">Before</a>
 			</div>
-			<div th:if="(${next} == true)">
-				<a th:href="@{GoToPlayListPage(playlistId=${playlist.id} , section=(${block} + 1))}">Next</a>
+			<div class="next" th:if="(${next} == true)">
+				<a th:class="a_next" th:href="@{GoToPlayListPage(playlistId=${playlist.id} , section=(${block} + 1))}">Next</a>
 			</div>
 			
 		</div>	
@@ -85,6 +85,10 @@
 			<a th:href="@{GoToHomePage}">Home page</a>
 		</div>
 	
+		<div class="logout">
+			<a th:href="@{Logout}">Logout</a>
+		</div>
+		
 	</body>
 	
 </html>

@@ -199,7 +199,7 @@ public class SongDAO {
 	 */
 	public ArrayList<SongDetails> getSongTitleAndImg(int playlistId) throws SQLException{
 		String query = "SELECT * FROM contains JOIN song ON contains.IdSong = song.Id JOIN album ON song.IdAlbum = album.Id "
-				+ "WHERE contains.IdPlaylist = ?";
+				+ "WHERE contains.IdPlaylist = ? ORDER BY album.PublicationYear DESC";
 		PreparedStatement pStatement = null;
 		ResultSet resultSet = null;
 		ArrayList<SongDetails> songs = new ArrayList<SongDetails>();

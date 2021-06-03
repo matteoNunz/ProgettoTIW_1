@@ -143,14 +143,18 @@ public class GoToPlaylistPage extends HttpServlet{
 			String title = pDao.findPlayListTitleById(id);
 			
 			//TODO check the functioning of block -> problem with before link in the html
+			//TODO it doesn't take songs in order of date -> with the first section it works
 			
-			boolean next = true;
+			boolean next = false;
 			
-			if(block > songsInPlaylist.size()) {
+			if(block * 5 + 5 > songsInPlaylist.size()) {
 				block = (songsInPlaylist.size() / 5);
 			}
-			if(block == (songsInPlaylist.size() / 5))
-				next = false;
+			//if(block == (songsInPlaylist.size() / 5))
+			//	next = false;
+			if((block * 5 + 5) < songsInPlaylist.size()) {
+				next = true;
+			}
 			
 			ArrayList<SongDetails> songs = new ArrayList<SongDetails>();
 			

@@ -1,17 +1,31 @@
-.error {color:red;}
+.error {
+	color:red;
+}
 
-.songsTable {
+/*.songsTable {
 	margin-left: auto;
   	margin-right: auto;
+}*/
+
+.before {
+	position: relative;
+	left: -170px;
+}
+
+.next {
+	position: relative;
+	left: 350px;
 }
 
 fieldset{
 	margin-right: 60px;
-	width: 0;
+	width: 250px;
+	margin:auto;
 }
 
 .createSongField {
-	margin: -24% -80% 0% 25% ;
+	position: relative;
+	margin: -23% -50% 0% 50% ;
 }
 
 img{
@@ -21,6 +35,7 @@ img{
 
 table , th , td {
   	border: 1px solid black;
+  	margin: auto;
 }
 
 .simpleTable {
@@ -30,6 +45,20 @@ table , th , td {
 td {
   text-align: center;
   vertical-align: middle;
+}
+
+body {
+	text-align: center;
+}
+
+.playlistTable {
+	position: relative;
+	margin: 0% 50% 0% 20% ;
+}
+
+.createPlaylistField {
+	position: relative;
+	margin: 0% 45% 0% 26% ;
 }
 
 

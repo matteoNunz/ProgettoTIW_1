@@ -15,7 +15,7 @@
 		<div th:if="${#lists.isEmpty(playlists)}">
 			No playList yet
 		</div>
-		<div th:if="${not #lists.isEmpty(playlists)}">
+		<div th:class="playlistTable" th:if="${not #lists.isEmpty(playlists)}">
 			<table>
 				<thead>
 					<tr>
@@ -36,7 +36,7 @@
 		</div>
 		
 		<br><br>
-		<fieldset>
+		<fieldset th:class="createPlaylistField">
 			<form th:action="@{/CreatePlaylist}" method="POST">
 				Create a new playList<br>
 				<p>Title: <input type="text" id="title" name="title" required></p>
@@ -60,6 +60,10 @@
 			</form>
 		</fieldset>
 		
+		
+		<div class="logout">
+			<a th:href="@{Logout}">Logout</a>
+		</div>
 	</body>
 
 </html>
