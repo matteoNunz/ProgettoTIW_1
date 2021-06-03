@@ -14,7 +14,12 @@
 		<br>
 		
 		<div th:if="${#lists.isEmpty(songsInPlaylist)}">
-			This playList doesn't have songs yet
+			<div th:if="(${block} == 0)">
+				This playList doesn't have songs yet
+			</div>
+			<div th:if="(${block} > 0)">
+				This section is free
+			</div>
 		</div>
 		<div th:if="${not #lists.isEmpty(songsInPlaylist)}">
 			<table class=songsTable>
@@ -47,10 +52,10 @@
 			</table>
 			
 			<div th:if="(${block} > 0)">
-				<a th:href="@{GoToPlaylistPage(playlistId=${playlist.id} , section=(${block} - 1))}">Before</a>
+				<a th:href="@{GoToPlayListPage(playlistId=${playlist.id} , section=(${block} - 1))}">Before</a>
 			</div>
-						<div th:if="(${next} == true)">
-				<a th:href="@{GoToPlaylistPage(playlistId=${playlist.id} , section=(${block} + 1))}">Next</a>
+			<div th:if="(${next} == true)">
+				<a th:href="@{GoToPlayListPage(playlistId=${playlist.id} , section=(${block} + 1))}">Next</a>
 			</div>
 			
 		</div>	

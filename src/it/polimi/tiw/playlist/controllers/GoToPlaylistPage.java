@@ -82,8 +82,12 @@ public class GoToPlaylistPage extends HttpServlet{
 	    User user = (User) s.getAttribute("user");
 	    
 		//Check if playlistId is valid
-		if(playlistId == null || playlistId.isEmpty() || section == null || section.isEmpty())
-			error += "Playlist e/o section not defined;";
+		if(playlistId == null || playlistId.isEmpty())
+			error += "Playlist not defined;";
+		
+		if(section == null || section.isEmpty()) {
+			section = "0";
+		}
 		
 		//Check the follow only if the id is valid
 		if(error.equals("")) {
@@ -137,6 +141,8 @@ public class GoToPlaylistPage extends HttpServlet{
 			ArrayList<SongDetails> songsInPlaylist = sDao.getSongTitleAndImg(id);
 			ArrayList<SongDetails> songsNotInPlaylist = sDao.getSongsNotInPlaylist(id , user.getId());
 			String title = pDao.findPlayListTitleById(id);
+			
+			//TODO check the functioning of block -> problem with before link in the html
 			
 			boolean next = true;
 			

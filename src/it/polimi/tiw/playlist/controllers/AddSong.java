@@ -89,7 +89,7 @@ public class AddSong extends HttpServlet{
 		//if an error occurred
 		if(!error.equals("")) {
 			request.setAttribute("error", error);
-			String path = "/GoToPlaylistPage";
+			String path = "/GoToPlayListPage";
 
 			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(path);
 			dispatcher.forward(request,response);
@@ -102,14 +102,19 @@ public class AddSong extends HttpServlet{
 		
 		try {
 			boolean result = pDao.addSong(pId, sId);
-			if(result == false) {
+			
+			if(result == true) {
+				String path = getServletContext().getContextPath() + ("/GoToPlayListPage?playlistId=" + playlistId + "&section=0");
+				response.sendRedirect(path);
+			}
+			else {
 				error += "An arror occurred with the db, retry later;";
 				request.setAttribute("error", error);
+				//Forward to GoToPlaylistPage
+				String path = getServletContext().getContextPath() + "/GoToPlayListPage";
+				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(path);
+				dispatcher.forward(request,response);
 			}
-			//Forward to GoToPlaylistPage
-			String path = getServletContext().getContextPath() + "/GoToPlaylistPage";
-			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(path);
-			dispatcher.forward(request,response);
 		}catch(SQLException e) {
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An arror occurred with the db, retry later");

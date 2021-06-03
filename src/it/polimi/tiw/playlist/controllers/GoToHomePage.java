@@ -66,6 +66,12 @@ public class GoToHomePage extends HttpServlet {
 		String error1 = "";
 		String error2 = "";
 		
+		//Check if the session is still valid
+		if (s.isNew() || s.getAttribute("user") == null) {
+			response.sendRedirect("/TIW-PlayList-HTML-Pure/login.html");
+			return;
+		}
+		
 		PlaylistDAO pDao = new PlaylistDAO(connection);
 		
 		//In case of forward from CreatePlaylist and CreateSong
