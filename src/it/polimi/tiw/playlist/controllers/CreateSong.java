@@ -34,6 +34,7 @@ public class CreateSong extends HttpServlet{
 	private Connection connection;
 	private String imgFolderPath = "";
 	private String mp3FolderPath = "";
+	private boolean isReplaced;
 	
 	public void init() {
 		ServletContext context = getServletContext();
@@ -41,6 +42,7 @@ public class CreateSong extends HttpServlet{
 		//Initializing the folder where images and mp3 files will be uploaded
 		imgFolderPath = context.getInitParameter("albumImgPath");
 		mp3FolderPath = context.getInitParameter("songFilePath");
+		isReplaced = false;
 		
 		try {
 			//Initializing the connection
@@ -175,7 +177,12 @@ public class CreateSong extends HttpServlet{
 		if(tempFile.exists())
 			error += "Image name already exists;";*/
 		
-		File tempFile = new File(outputPathSong);
+		//In case od future error the software will be delete the new song only if it is completely new
+		File tempFile = new File(outputPathImg);
+		if(tempFile.exists())
+			isReplaced = true;
+		
+		tempFile = new File(outputPathSong);
 		if(tempFile.exists())
 			error += "Song name already exists; ";
 		System.out.println("Error is: " + error);
@@ -231,8 +238,11 @@ public class CreateSong extends HttpServlet{
 			}
 			else {
 				//Delete uploaded file if something got wrong during the updating of the dataBase
-				File file = new File(outputPathSong);
-				file.delete();
+				File file; 
+				if(!isReplaced) {
+					file = new File(outputPathSong);
+					file.delete();
+				}
 				file = new File(outputPathImg);
 				file.delete();
 				
@@ -246,8 +256,11 @@ public class CreateSong extends HttpServlet{
 			
 		}catch(SQLException e) {
 			//Delete uploaded file if something got wrong with the data base
-			File file = new File(outputPathSong);
-			file.delete();
+			File file; 
+			if(!isReplaced) {
+				file = new File(outputPathSong);
+				file.delete();
+			}
 			file = new File(outputPathImg);
 			file.delete();
 			e.printStackTrace();

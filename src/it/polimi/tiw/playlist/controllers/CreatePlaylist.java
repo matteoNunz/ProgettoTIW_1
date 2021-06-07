@@ -16,11 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import it.polimi.tiw.playlist.beans.Playlist;
 import it.polimi.tiw.playlist.beans.User;
 import it.polimi.tiw.playlist.dao.PlaylistDAO;
 
