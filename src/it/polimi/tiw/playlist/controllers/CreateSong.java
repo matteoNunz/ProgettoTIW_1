@@ -96,6 +96,11 @@ public class CreateSong extends HttpServlet{
 		if(publicationYear > currentYear)
 			error += "Invalid date;";
 		
+		//Check if the genre is valid
+		if(!(genre.equals("Dance") || genre.equals("Pop") || genre.equals("Rock") || genre.equals("Rap"))) {
+			error += "Invalid genre;";
+		}
+		
 		//Check if some input are too long
 		if(songTitle.length() > 45)
 			error += "Song title too long;";
@@ -162,12 +167,15 @@ public class CreateSong extends HttpServlet{
 		if(fileNameImg.length() > 255) {
 			error += "Image name too long;";
 		}
-		//Check if a song or an image with the same name already exist
-		File tempFile = new File(outputPathImg);
-		if(tempFile.exists())
-			error += "Image name already exists;";
 		
-		tempFile = new File(outputPathSong);
+		//TODO to link more songs to the same album this if need to be deleted
+		//		it's very difficult that the same singer create 2 album with the same name and publication year
+		//Check if a song or an image with the same name already exist
+		/*File tempFile = new File(outputPathImg);
+		if(tempFile.exists())
+			error += "Image name already exists;";*/
+		
+		File tempFile = new File(outputPathSong);
 		if(tempFile.exists())
 			error += "Song name already exists; ";
 		System.out.println("Error is: " + error);
@@ -194,7 +202,7 @@ public class CreateSong extends HttpServlet{
 		//Save the mp3 file
 		File fileSong = new File(outputPathSong);
 		
-		try (InputStream fileContent = albumImg.getInputStream()) {
+		try (InputStream fileContent = songFile.getInputStream()) {
 			Files.copy(fileContent, fileSong.toPath());
 		} catch (Exception e) {
 			error += "Error in uploading the music file;\n";
@@ -222,6 +230,12 @@ public class CreateSong extends HttpServlet{
 				response.sendRedirect(path);
 			}
 			else {
+				//Delete uploaded file if something got wrong during the updating of the dataBase
+				File file = new File(outputPathSong);
+				file.delete();
+				file = new File(outputPathImg);
+				file.delete();
+				
 				error += "Impossible upload file in the database , try later";
 				request.setAttribute("error1", error);
 				String path = getServletContext().getContextPath() + "/GoToHomePage";
@@ -231,6 +245,11 @@ public class CreateSong extends HttpServlet{
 			}
 			
 		}catch(SQLException e) {
+			//Delete uploaded file if something got wrong with the data base
+			File file = new File(outputPathSong);
+			file.delete();
+			file = new File(outputPathImg);
+			file.delete();
 			e.printStackTrace();
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An arror occurred uploading the db, retry later");
 		}

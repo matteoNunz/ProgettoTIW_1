@@ -60,18 +60,17 @@ public class CreatePlaylist extends HttpServlet{
 	
 	public void doPost(HttpServletRequest request , HttpServletResponse response)throws ServletException,IOException{
 		String title = request.getParameter("title");
-		String loginPath = "/login.html";
 		Date creationDate = new Date(System.currentTimeMillis());
 		String error = "";
 
 		HttpSession s = request.getSession();
 		User user = (User) s.getAttribute("user");
 		if (s.isNew() || user == null) {
-			response.sendRedirect(loginPath);
+			response.sendRedirect("/TIW-PlayList-HTML-Pure/login.html");
 			return;
 		}
 		
-		if(title== null || title.isEmpty())
+		if(title == null || title.isEmpty())
 			error += "Title is empty";
 		else if(title.length() > 45)
 			error += "Title is too long";

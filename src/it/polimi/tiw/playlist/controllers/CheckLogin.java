@@ -20,7 +20,7 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 import it.polimi.tiw.playlist.beans.User;
 import it.polimi.tiw.playlist.dao.UserDAO;
 
-@WebServlet("/Login")
+@WebServlet("/CheckLogin")
 public class CheckLogin extends HttpServlet{
 	private static final long serialVersionUID = 1L;
 	private Connection connection;
@@ -40,7 +40,7 @@ public class CheckLogin extends HttpServlet{
 		templateResolver.setTemplateMode(TemplateMode.HTML);
 		this.templateEngine = new TemplateEngine();
 		this.templateEngine.setTemplateResolver(templateResolver);
-		//templateResolver.setSuffix(".html");
+		templateResolver.setSuffix(".html");
 		
 		try {	
 			//Initializing the connection
@@ -115,27 +115,3 @@ public class CheckLogin extends HttpServlet{
 		}
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

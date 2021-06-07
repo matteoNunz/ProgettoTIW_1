@@ -236,6 +236,13 @@ public class SongDAO {
 		return songs;
 	}
 	
+	/**
+	 * Method that take all the songs added by the user but not in the playList specified by playlistId
+	 * @param playlistId is the id of the playList  
+	 * @param userId is the id of the user
+	 * @return an array list of SongDetails containing all the songs not in the playList
+	 * @throws SQLException
+	 */
 	public ArrayList<SongDetails> getSongsNotInPlaylist(int playlistId , int userId) throws SQLException{
 		String query = "SELECT * FROM song WHERE IdUser = ? AND Id NOT IN ("
 				+ "SELECT IdSong FROM contains WHERE IdPlaylist = ?)";
@@ -369,7 +376,7 @@ public class SongDAO {
 	}
 
 	/**
-	 * Method that verify if a song belongs to a specific user
+	 * Method that verify if a song (the image name) belongs to a specific user
 	 * @param title is the name of the song file
 	 * @param userId is the user id
 	 * @return true if the song belongs, false otherwise
@@ -384,6 +391,50 @@ public class SongDAO {
 		try {
 			pStatement = connection.prepareStatement(query);
 			pStatement.setString(1, title);
+			pStatement.setInt(2, userId);
+			
+			resultSet = pStatement.executeQuery();
+			
+			if(resultSet.next())
+				result = true;
+			
+		}catch(SQLException e) {
+			throw new SQLException();
+		}finally {
+			try {
+				if(resultSet != null) {
+					resultSet.close();
+				}
+			}catch(Exception e1) {
+				throw new SQLException(e1);
+			}
+			try {
+				if(pStatement != null) {
+					pStatement.close();
+				}
+			}catch(Exception e2) {
+				throw new SQLException(e2);
+			}
+		}	
+		return result;
+	}
+	
+	/**
+	 * Method that verify if a song (the song name) belongs to the user
+	 * @param songTitle is the name of the stored file
+	 * @param userId is the id of the user
+	 * @return true if there is the song , false otherwise
+	 * @throws SQLException
+	 */
+	public boolean findSongByUserId(String songTitle , int userId) throws SQLException{
+		String query = "SELECT * FROM song WHERE MusicFile = ? AND IdUser = ?";
+		boolean result = false;
+		PreparedStatement pStatement = null;
+		ResultSet resultSet = null;
+		
+		try {
+			pStatement = connection.prepareStatement(query);
+			pStatement.setString(1, songTitle);
 			pStatement.setInt(2, userId);
 			
 			resultSet = pStatement.executeQuery();

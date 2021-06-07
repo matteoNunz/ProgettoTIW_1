@@ -66,8 +66,8 @@ public class GoToHomePage extends HttpServlet {
 		String error1 = "";
 		String error2 = "";
 		
-		//Check if the session is still valid
-		if (s.isNew() || s.getAttribute("user") == null) {
+		//Check if the session is valid
+		if (s.isNew() || user == null) {
 			response.sendRedirect("/TIW-PlayList-HTML-Pure/login.html");
 			return;
 		}

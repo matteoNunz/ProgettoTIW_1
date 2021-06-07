@@ -44,24 +44,25 @@ public class AddSong extends HttpServlet{
 	
 	public void doPost(HttpServletRequest request , HttpServletResponse response)throws ServletException,IOException{
 		String playlistId = request.getParameter("playlistId");
-		String songId = request.getParameter("song");//I'm not sure
+		String songId = request.getParameter("song");
 		String error = "";
 		int pId = -1;
 		int sId = -1;
 		
 		HttpSession s = request.getSession();
+		//Take the user
+	    User user = (User) s.getAttribute("user");
 		
-		if (s.isNew() || s.getAttribute("user") == null) {
+		if (s.isNew() || user == null) {
 			response.sendRedirect("/TIW-PlayList-HTML-Pure/login.html");
 			return;
 		}
-		//Take the user
-	    User user = (User) s.getAttribute("user");
 		
 	    //Check id the parameters are present
 		if(playlistId == null || playlistId.isEmpty() || songId == null || songId.isEmpty()) {
 			error += "Missing parameter;";
 		}
+		
 		if(error.equals("")) {
 			try {
 				//Create the DAO to check if the playList id belongs to the user 
@@ -77,7 +78,7 @@ public class AddSong extends HttpServlet{
 					error += "PlayList doesn't exist";
 				//Check if the player has created the song with sId as id -->Check if the song exists
 				if(!sDao.findSongByUser(sId, user.getId()))
-					error += "Song dowsnt exist;";
+					error += "Song doesn't exist;";
 			}catch(NumberFormatException e) {
 				error += "Playlist not defined;";
 			}catch(SQLException e) {
@@ -88,7 +89,7 @@ public class AddSong extends HttpServlet{
 		//if an error occurred
 		if(!error.equals("")) {
 			request.setAttribute("error", error);
-			String path = "/GoToPlayListPage";
+			String path = getServletContext().getContextPath() + "/GoToPlayListPage?playlistId=" + playlistId + "&section=0";
 
 			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(path);
 			dispatcher.forward(request,response);
@@ -110,7 +111,7 @@ public class AddSong extends HttpServlet{
 				error += "An arror occurred with the db, retry later;";
 				request.setAttribute("error", error);
 				//Forward to GoToPlaylistPage
-				String path = getServletContext().getContextPath() + "/GoToPlayListPage";
+				String path = getServletContext().getContextPath() + "/GoToPlayListPage?playlistId=" + playlistId + "&section=0";
 				RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(path);
 				dispatcher.forward(request,response);
 			}
