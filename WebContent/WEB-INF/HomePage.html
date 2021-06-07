@@ -20,7 +20,12 @@
 			<form th:action="@{/CreateSong}" method="POST" enctype="multipart/form-data">
 				Add a new song in your DataBase<br>
 				<p>Title: 					<input type="text" id="title" name="title" required></p>
-				<p>Genre: 					<input type="text" id="genre" name="genre" required></p>
+				<p>Genre:					<select id="genre" name="genre" required>
+												<option value="Dance"> Dance </option>
+												<option value="Pop">   Pop   </option>
+												<option value="Rap">   Rap   </option>
+												<option value="Rock">  Rock  </option>
+											</select></p>
 				<p>Album title: 			<input type="text" id="albumTitle" name="albumTitle" required></p>
 				<p>Singer: 					<input type="text" id="singer" name="singer" required></p>
 				<p>Album publication year: 	<input type="number" id="date" name="date" required></p>
@@ -32,7 +37,7 @@
 		</fieldset>
 		<br><br>
 		
-		<div th:if="${#lists.isEmpty(playlists)}">
+		<div th:class="playlistTable" th:if="${#lists.isEmpty(playlists)}">
 			No playList yet
 		</div>
 		<div th:class="playlistTable" th:if="${not #lists.isEmpty(playlists)}">

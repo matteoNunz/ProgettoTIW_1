@@ -1,21 +1,12 @@
 package it.polimi.tiw.playlist.dao;
 
-import java.io.File;
-import java.io.InputStream;
-import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
-
-import com.mysql.cj.protocol.Resultset;
-
 import it.polimi.tiw.playlist.beans.SongDetails;
-import it.polimi.tiw.playlist.beans.User;
 
 public class SongDAO {
 	private Connection connection;
@@ -26,14 +17,14 @@ public class SongDAO {
 	
 	/**
 	 * Method that verify if an album is already in the data base schema "album"
-	 * @param albumTitle
-	 * @param singer
-	 * @param publicationYear
-	 * @param outputPathImg
+	 * @param albumTitle is the title of the album
+	 * @param singer is the singer
+	 * @param publicationYear is the publication year of the album
+	 * @param filename is the name of the image file saved in local
 	 * @return the id of the album if that already exists, 0 otherwise
 	 * @throws SQLException
 	 */
-	public int findAlbumId(String albumTitle , String singer , int publicationYear , String outputPathImg )throws SQLException {
+	private int findAlbumId(String albumTitle , String singer , int publicationYear , String filename )throws SQLException {
 		String query = "SELECT Id FROM album WHERE Title = ? AND Image = ? AND Singer = ? AND PublicationYear = ?";
 		PreparedStatement pStatement = null;
 		ResultSet resultSet = null;
@@ -42,7 +33,7 @@ public class SongDAO {
 		try {
 			pStatement = connection.prepareStatement(query);
 			pStatement.setString(1, albumTitle);
-			pStatement.setString(2, outputPathImg);
+			pStatement.setString(2, filename);
 			pStatement.setString(3, singer);
 			pStatement.setInt(4, publicationYear);
 			
@@ -72,26 +63,26 @@ public class SongDAO {
 	
 	/**
 	 * Method that create the album and the song doing the commit if everything went okay, rollBack otherwise
-	 * @param userId
-	 * @param songTitle
-	 * @param genre
-	 * @param albumTitle
-	 * @param singer
-	 * @param publicationYear
-	 * @param outputPathImg
-	 * @param outputPathSong
+	 * @param userId is the id of the user who is updating the DB
+	 * @param songTitle is the title of the song
+	 * @param genre is the genre of the song
+	 * @param albumTitle is the title of the album
+	 * @param singer is the singer
+	 * @param publicationYear is the publication year of the album
+	 * @param imgName is the name of the stored image
+	 * @param songName is the name of the stored song
 	 * @return true if the method created correctly both album and song , false otherwise
 	 * @throws SQLException
 	 */
-	public boolean createSongAndAlbum(int userId , String songTitle , String genre , String albumTitle , String singer , int publicationYear , String outputPathImg , String outputPathSong) 
+	public boolean createSongAndAlbum(int userId , String songTitle , String genre , String albumTitle , String singer , int publicationYear , String imgName , String songName) 
 			throws SQLException{
 		
 		boolean result = false;
 		try {
 			connection.setAutoCommit(false);
 			
-			int albumId = createAlbum(albumTitle , singer , publicationYear , outputPathImg);
-			result = createSong(userId , songTitle , genre , albumId , outputPathSong);
+			int albumId = createAlbum(albumTitle , singer , publicationYear , imgName);
+			result = createSong(userId , songTitle , genre , albumId , songName);
 			
 			connection.commit();
 		}catch(SQLException e){
@@ -99,24 +90,23 @@ public class SongDAO {
 			throw e;
 		}finally {
 			connection.setAutoCommit(true);
-			//And close the pStatement here , because now there are 3 different methods but the need to be together
 		}
 		return result;
 	}
 	
 	/**
 	 * Method that check if the same album is already in the dataBase and then, eventually, create a new album
-	 * @param albumTitle
-	 * @param singer
-	 * @param publicationYear
-	 * @param outputPathImg
+	 * @param albumTitle is the name of the album
+	 * @param singer is the singer
+	 * @param publicationYear is the publication year of the album
+	 * @param filename is the name of the stored image
 	 * @return the id of the album created or already present
 	 * @throws SQLException
 	 */
-	private int createAlbum(String albumTitle , String singer , int publicationYear , String outputPathImg) throws SQLException{
+	private int createAlbum(String albumTitle , String singer , int publicationYear , String filename) throws SQLException{
 		
 		int albumId = 0;
-		albumId = findAlbumId(albumTitle , singer , publicationYear , outputPathImg);
+		albumId = findAlbumId(albumTitle , singer , publicationYear , filename);
 		//If the album is already in the data base I reuse it
 		if(albumId != 0)
 			return albumId;
@@ -127,14 +117,14 @@ public class SongDAO {
 		try {
 			pStatement = connection.prepareStatement(query);
 			pStatement.setString(1, albumTitle);
-			pStatement.setString(2, outputPathImg);
+			pStatement.setString(2, filename);
 			pStatement.setString(3, singer);
 			pStatement.setInt(4, publicationYear);
 			
 			int code = pStatement.executeUpdate();
 			
 			if(code > 0)
-				return (findAlbumId(albumTitle , singer , publicationYear , outputPathImg));
+				return (findAlbumId(albumTitle , singer , publicationYear , filename));
 		}catch(SQLException e) {
 			throw e;
 		}finally {
@@ -151,15 +141,15 @@ public class SongDAO {
 	
 	/**
 	 * Method that create the song in the dataBase
-	 * @param userId
-	 * @param songTitle
-	 * @param genre
-	 * @param albumId
-	 * @param outputPathSong
+	 * @param userId is the user id
+	 * @param songTitle is the title of the song
+	 * @param genre is the genre
+	 * @param albumId is the id of the album where this song is
+	 * @param filename is the name of the stored song
 	 * @return true if the update of the DB went good , false otherwise
 	 * @throws SQLException
 	 */
-	private boolean createSong(int userId , String songTitle , String genre , int albumId , String outputPathSong) throws SQLException{
+	private boolean createSong(int userId , String songTitle , String genre , int albumId , String filename) throws SQLException{
 		String query = "INSERT INTO song (IdUser , KindOf , MusicFile , SongTitle , IdAlbum) VALUES (? , ? , ? , ? , ?)";
 		PreparedStatement pStatement = null;
 		int code = 0;
@@ -168,7 +158,7 @@ public class SongDAO {
 			pStatement = connection.prepareStatement(query);
 			pStatement.setInt(1, userId);
 			pStatement.setString(2, genre);
-			pStatement.setString(3, outputPathSong);
+			pStatement.setString(3, filename);
 			pStatement.setString(4, songTitle);
 			pStatement.setInt(5, albumId);
 			
@@ -236,6 +226,13 @@ public class SongDAO {
 		return songs;
 	}
 	
+	/**
+	 * Method that take all the songs added by the user but not in the playList specified by playlistId
+	 * @param playlistId is the id of the playList  
+	 * @param userId is the id of the user
+	 * @return an array list of SongDetails containing all the songs not in the playList
+	 * @throws SQLException
+	 */
 	public ArrayList<SongDetails> getSongsNotInPlaylist(int playlistId , int userId) throws SQLException{
 		String query = "SELECT * FROM song WHERE IdUser = ? AND Id NOT IN ("
 				+ "SELECT IdSong FROM contains WHERE IdPlaylist = ?)";
@@ -369,13 +366,13 @@ public class SongDAO {
 	}
 
 	/**
-	 * Method that verify if a song belongs to a specific user
-	 * @param title is the name of the song file
+	 * Method that verify if a song (the image name) belongs to a specific user
+	 * @param imageName is the name of the song file
 	 * @param userId is the user id
 	 * @return true if the song belongs, false otherwise
 	 * @throws SQLException
 	 */
-	public boolean findSongByUser(String title , int userId) throws SQLException{
+	public boolean findSongByUser(String imageName , int userId) throws SQLException{
 		String query = "SELECT * FROM song JOIN album WHERE album.Image = ? AND song.IdUser = ?";
 		boolean result = false;
 		PreparedStatement pStatement = null;
@@ -383,7 +380,51 @@ public class SongDAO {
 		
 		try {
 			pStatement = connection.prepareStatement(query);
-			pStatement.setString(1, title);
+			pStatement.setString(1, imageName);
+			pStatement.setInt(2, userId);
+			
+			resultSet = pStatement.executeQuery();
+			
+			if(resultSet.next())
+				result = true;
+			
+		}catch(SQLException e) {
+			throw new SQLException();
+		}finally {
+			try {
+				if(resultSet != null) {
+					resultSet.close();
+				}
+			}catch(Exception e1) {
+				throw new SQLException(e1);
+			}
+			try {
+				if(pStatement != null) {
+					pStatement.close();
+				}
+			}catch(Exception e2) {
+				throw new SQLException(e2);
+			}
+		}	
+		return result;
+	}
+	
+	/**
+	 * Method that verify if a song (the song name) belongs to the user
+	 * @param songName is the name of the stored file
+	 * @param userId is the id of the user
+	 * @return true if there is the song , false otherwise
+	 * @throws SQLException
+	 */
+	public boolean findSongByUserId(String songName , int userId) throws SQLException{
+		String query = "SELECT * FROM song WHERE MusicFile = ? AND IdUser = ?";
+		boolean result = false;
+		PreparedStatement pStatement = null;
+		ResultSet resultSet = null;
+		
+		try {
+			pStatement = connection.prepareStatement(query);
+			pStatement.setString(1, songName);
 			pStatement.setInt(2, userId);
 			
 			resultSet = pStatement.executeQuery();

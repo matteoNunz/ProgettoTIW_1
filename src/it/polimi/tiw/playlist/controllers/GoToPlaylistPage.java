@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -73,18 +72,20 @@ public class GoToPlaylistPage extends HttpServlet{
 		//TODO use a filter
 		HttpSession s = request.getSession();
 		
-		if (s.isNew() || s.getAttribute("user") == null) {
+		//Take the user
+	    User user = (User) s.getAttribute("user");
+		
+		//Check if the session is valid
+		if (s.isNew() || user == null) {
 			response.sendRedirect("/TIW-PlayList-HTML-Pure/login.html");
 			return;
 		}
-		
-		//Take the user
-	    User user = (User) s.getAttribute("user");
 	    
 		//Check if playlistId is valid
 		if(playlistId == null || playlistId.isEmpty())
 			error += "Playlist not defined;";
 		
+		//If section is null or empty set it to the default value
 		if(section == null || section.isEmpty()) {
 			section = "0";
 		}
@@ -130,6 +131,7 @@ public class GoToPlaylistPage extends HttpServlet{
 		if(request.getAttribute("error1") != null)
 			error1 = (String) request.getAttribute("error1");
 		
+		//to take songs in and not in the specified playList
 		SongDAO sDao = new SongDAO(connection);
 		
 		//To take the title of the playList
@@ -151,6 +153,7 @@ public class GoToPlaylistPage extends HttpServlet{
 				next = true;
 			}
 			
+			//Save only the songs in the current block (max 5 songs)
 			ArrayList<SongDetails> songs = new ArrayList<SongDetails>();
 			
 			if(songsInPlaylist.size() > 0) {
