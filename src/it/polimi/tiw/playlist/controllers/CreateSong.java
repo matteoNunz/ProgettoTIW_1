@@ -71,6 +71,8 @@ public class CreateSong extends HttpServlet{
 		Part albumImg = request.getPart("albumImg");
 		Part songFile = request.getPart("songFile");
 		
+		int publicationYear = 0;
+		
 		HttpSession s = request.getSession();
 		//Check if the session is still valid
 		if (s.isNew() || s.getAttribute("user") == null) {
@@ -89,14 +91,18 @@ public class CreateSong extends HttpServlet{
 			error += "Missin parameters;";
 		}	
 		
-		int publicationYear = Integer.parseInt(date);
-		
-		//Take the current year
-		int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-		
-		//Check if the publicationYear is not bigger than the current year
-		if(publicationYear > currentYear)
-			error += "Invalid date;";
+		try {
+			publicationYear = Integer.parseInt(date);
+			
+			//Take the current year
+			int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+			
+			//Check if the publicationYear is not bigger than the current year
+			if(publicationYear > currentYear)
+				error += "Invalid date;";
+		}catch(NumberFormatException e) {
+			error += "Date not valid;";
+		}
 		
 		//Check if the genre is valid
 		if(!(genre.equals("Dance") || genre.equals("Pop") || genre.equals("Rock") || genre.equals("Rap"))) {
