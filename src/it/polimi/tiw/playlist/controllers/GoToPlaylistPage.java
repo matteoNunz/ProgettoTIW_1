@@ -125,11 +125,13 @@ public class GoToPlaylistPage extends HttpServlet{
 		//The user created this playList
 		
 		//Take the error in case of forward from AddSong
-		if(request.getAttribute("error") != null)
-			error = (String) request.getAttribute("error");
+		if(request.getAttribute("error") != null) {
+			error += (String) request.getAttribute("error");
+		}
 		//Take the error in case of forward from GoToSongPage
-		if(request.getAttribute("error1") != null)
-			error1 = (String) request.getAttribute("error1");
+		else if(request.getAttribute("error2") != null) {
+			error1 += (String) request.getAttribute("error2");
+		}
 		
 		//to take songs in and not in the specified playList
 		SongDAO sDao = new SongDAO(connection);

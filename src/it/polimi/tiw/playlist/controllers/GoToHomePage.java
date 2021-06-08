@@ -74,12 +74,12 @@ public class GoToHomePage extends HttpServlet {
 		
 		PlaylistDAO pDao = new PlaylistDAO(connection);
 		
-		//In case of forward from CreatePlaylist and CreateSong
+		//In case of forward from CreatePlaylist , CreateSong and GoToPlayistPage 
 		if(((String) request.getAttribute("error")) != null) 
 			error = (String) request.getAttribute("error");
-		if(((String) request.getAttribute("error1")) != null) 
+		else if(((String) request.getAttribute("error1")) != null) 
 			error1 = (String) request.getAttribute("error1");
-		if(((String) request.getAttribute("error2")) != null) 
+		else if(((String) request.getAttribute("error2")) != null) //from GoToPlaylistPage
 			error2 = (String) request.getAttribute("error2");
 		
 		try {
