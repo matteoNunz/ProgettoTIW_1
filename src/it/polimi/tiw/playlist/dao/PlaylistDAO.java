@@ -190,7 +190,7 @@ public class PlaylistDAO {
 	 */
 	public String findPlayListTitleById(int playlistId) throws SQLException{
 		String query = "SELECT * FROM playlist WHERE Id = ?";
-		String result = null;
+		String result = "";
 		ResultSet resultSet = null;
 		PreparedStatement pStatement = null;
 		
@@ -255,6 +255,51 @@ public class PlaylistDAO {
 		    }
 		}
 		return (code > 0);
+	}
+	
+	/**
+	 * Method that checks if a song is already in the playList
+	 * @param pId is the playList id 
+	 * @param sId is the song id
+	 * @return true if the song is already present , false otherwise
+	 * @throws SQLException
+	 */
+	public boolean findSongInPlaylist(int pId , int sId) throws SQLException {
+		String query = "SELECT * FROM contains WHERE IdSong = ? AND idPlaylist = ?";
+		boolean result = false;
+		
+		PreparedStatement pStatement = null;
+		ResultSet resultSet = null;
+		
+		try {
+			pStatement = connection.prepareStatement(query);
+			pStatement.setInt(1, sId);
+			pStatement.setInt(2, pId);
+			
+			resultSet = pStatement.executeQuery();
+			
+			if(resultSet.next())
+				result = true;
+		}catch(SQLException e) {
+			throw new SQLException();
+		}finally{
+			try {
+				if(resultSet != null) {
+					resultSet.close();
+				}
+			}catch(Exception e1) {
+				throw new SQLException(e1);
+			}
+			try {
+				if(pStatement != null) {
+					pStatement.close();
+				}
+			}catch(Exception e2) {
+				throw new SQLException(e2);
+		    }
+		}
+		return result;
+		
 	}
 	
 }

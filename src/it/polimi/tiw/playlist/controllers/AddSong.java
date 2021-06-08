@@ -73,12 +73,15 @@ public class AddSong extends HttpServlet{
 				pId = Integer.parseInt(playlistId);
 				sId = Integer.parseInt(songId);
 				
-				//Check if the player can access at this playList --> Check if the playList exists
+				//Check if the user can access in this playList --> Check if the playList exists
 				if(!pDao.findPlayListById(pId, user.getId()))
 					error += "PlayList doesn't exist";
 				//Check if the player has created the song with sId as id -->Check if the song exists
 				if(!sDao.findSongByUser(sId, user.getId()))
 					error += "Song doesn't exist;";
+				//Check if the song is already in the playList
+				if(pDao.findSongInPlaylist(pId, sId))
+					error += "Song already present in this playList;";
 			}catch(NumberFormatException e) {
 				error += "Playlist not defined;";
 			}catch(SQLException e) {
