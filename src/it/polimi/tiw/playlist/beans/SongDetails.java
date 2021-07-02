@@ -6,7 +6,7 @@ public class SongDetails{
 	private String albumTitle;
 	private String singer;
 	private String kindOf;
-	private String songFile;//where is the music file
+	private String songFile;
 	private String imgFile;
 	private int publicationYear;
 

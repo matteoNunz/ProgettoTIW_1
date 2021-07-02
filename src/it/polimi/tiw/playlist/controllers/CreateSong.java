@@ -34,7 +34,7 @@ public class CreateSong extends HttpServlet{
 	private Connection connection;
 	private String imgFolderPath = "";
 	private String mp3FolderPath = "";
-	private boolean isReplaced;
+	private boolean isReplaced = false;
 	
 	public void init() {
 		ServletContext context = getServletContext();
@@ -119,20 +119,20 @@ public class CreateSong extends HttpServlet{
 		if(singer.length() > 45)
 			error += "Singer name too long;";
 		
-		//Take the type of the image file uploaded : image/png
+		//Take the type of the image file uploaded
 		String contentTypeImg = albumImg.getContentType();
 
 		//Check if the type is an image
 		if(!contentTypeImg.startsWith("image"))
 			error += "Image file not valid;";
 		else {
-			//If it's an image, check id the size is bigger than 1024KB (about 1MB)
+			//If it's an image, check id the size is bigger than 1024KB (1MB)
 			if(albumImg.getSize() > 1024000) {
 				error += "Image size is too big;";
 			}	
 		}
 		
-		//Take the type of the music file uploaded : audio/mpeg
+		//Take the type of the music file uploaded
 		String contentTypeMusic = songFile.getContentType();
 		
 		//Check the type of the music file uploaded
@@ -183,7 +183,7 @@ public class CreateSong extends HttpServlet{
 		if(tempFile.exists())
 			error += "Image name already exists;";*/
 		
-		//In case od future error the software will be delete the new song only if it is completely new
+		//In case of future error the software will be delete the new song only if it is completely new
 		File tempFile = new File(outputPathImg);
 		if(tempFile.exists())
 			isReplaced = true;
@@ -191,7 +191,6 @@ public class CreateSong extends HttpServlet{
 		tempFile = new File(outputPathSong);
 		if(tempFile.exists())
 			error += "Song name already exists; ";
-		System.out.println("Error is: " + error);
 		
 		//If an error occurred, redirect with errorMsg1 to the template engine  
 		if(!error.equals("")) {
@@ -203,13 +202,25 @@ public class CreateSong extends HttpServlet{
 			return;
 		}
 		
-		//Save the image
-		File fileImg = new File(outputPathImg);
+		//Save the image if it's not present
+		if(!isReplaced) {
+			File fileImg = new File(outputPathImg);
+			
+			try (InputStream fileContent = albumImg.getInputStream()) {
+				Files.copy(fileContent, fileImg.toPath());
+			} catch (Exception e) {
+				error += "Error in uploading the image;";
+			}
+		}
 		
-		try (InputStream fileContent = albumImg.getInputStream()) {
-			Files.copy(fileContent, fileImg.toPath());
-		} catch (Exception e) {
-			error += "Error in uploading the image;";
+		//If an error occurred, redirect with errorMsg1 to the template engine  
+		if(!error.equals("")) {
+			request.setAttribute("error1", error);
+			String path = "/GoToHomePage";
+
+			RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(path);
+			dispatcher.forward(request,response);
+			return;
 		}
 		
 		//Save the mp3 file
@@ -231,7 +242,7 @@ public class CreateSong extends HttpServlet{
 			return;
 		}
 		
-		//Now it's possible update the data base
+		//Now the data base can be updated
 		
 		SongDAO sDao = new SongDAO(connection);
 		

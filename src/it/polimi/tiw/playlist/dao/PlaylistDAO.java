@@ -17,9 +17,9 @@ public class PlaylistDAO {
 	}
 	
 	/**
-	 * Method that create a list of playlist of the user
+	 * Method that create a list of playList of the user
 	 * @param userId is the id of the user
-	 * @return an ArrayList of playlist created by the user
+	 * @return an ArrayList of playList created by the user
 	 * @throws SQLException 
 	 */
 	public ArrayList<Playlist> findPlaylist(int userId) throws SQLException{
@@ -104,7 +104,7 @@ public class PlaylistDAO {
 	}
 	
 	/**
-	 * Method that create a new playList with an unique title 
+	 * Method that create a new playList with an unique title for the user
 	 * @param title 
 	 * @param creationDate
 	 * @return true if the playList was created correctly, false otherwise
@@ -115,7 +115,7 @@ public class PlaylistDAO {
 		int code = 0;
 		PreparedStatement pStatement = null;
 		
-		if(findPlaylistByTitle(title , userId) == true)//And if findPlaylistByTitle thorw an exception?????
+		if(findPlaylistByTitle(title , userId) == true)
 			return false;
 		
 		try {
@@ -225,8 +225,7 @@ public class PlaylistDAO {
 	}
 	
 	/**
-	 * Method that add a song to a playList in the "contains" schema 
-	 * Maybe this method will go in a future bean called contains 
+	 * Method that add a song to a playList in the "contains" schema  
 	 * @param pId is the playList id
 	 * @param sId is the song id
 	 * @return true if the update went well, false otherwise
