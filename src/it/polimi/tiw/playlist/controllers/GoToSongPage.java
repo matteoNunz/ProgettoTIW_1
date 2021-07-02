@@ -143,7 +143,7 @@ public class GoToSongPage extends HttpServlet{
 			final WebContext ctx = new WebContext(request , response , servletContext , request.getLocale());
 			ctx.setVariable("song", song);
 			ctx.setVariable("playlist", playlist);
-			//block is the block in the playList where there is the song
+			//block is the section of the playList where there is the song
 			ctx.setVariable("block", block);
 			templateEngine.process(path , ctx , response.getWriter());
 			

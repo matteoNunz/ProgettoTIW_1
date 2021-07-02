@@ -61,15 +61,13 @@ public class GoToPlaylistPage extends HttpServlet{
 	}
 	
 	public void doGet(HttpServletRequest request , HttpServletResponse response)throws ServletException,IOException{
-		//Take the playList id
 		String playlistId = request.getParameter("playlistId");
 		String section = request.getParameter("section");//Which songs need to be shown
 		String error = "";
 		String error1 = "";
 		int id = -1;
 		int block = 0;
-		
-		//TODO use a filter
+
 		HttpSession s = request.getSession();
 		
 		//Take the user
@@ -100,7 +98,7 @@ public class GoToPlaylistPage extends HttpServlet{
 				id = Integer.parseInt(playlistId);
 				//Check if section is a number
 				block = Integer.parseInt(section);
-				//Check if the player can access at this playList --> Check if the playList exists
+				//Check if the user can access at this playList --> Check if the playList exists
 				if(!pDao.findPlayListById(id, user.getId())) {
 						error += "PlayList doesn't exist";
 				}

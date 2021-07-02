@@ -78,7 +78,6 @@ public class GetImage extends HttpServlet{
 				return;
 			}
 		}catch(SQLException e) {
-			//Error
 			return;
 		}
 		
@@ -86,7 +85,6 @@ public class GetImage extends HttpServlet{
 		File file = new File(folderPath, filename);
 		
 		if (!file.exists() || file.isDirectory()) {
-			//Set an error
 			return;
 		}
 		

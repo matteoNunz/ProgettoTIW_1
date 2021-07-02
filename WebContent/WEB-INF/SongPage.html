@@ -33,8 +33,7 @@
 					<td><span th:text="${song.albumtitle}"></span></td>
 					<td><span th:text="${song.publicationYear}"></span></td>
 					<td><span th:text="${song.kindOf}"></span></td>
-					<!-- <td><span th:text="${song.songFile}"></span></td> -->
-					<td>
+          <td>
 						<audio controls>
 							<source th:src="@{GetSong/{song}(song=${song.songFile})}" type="audio/mpeg" >
 						</audio>

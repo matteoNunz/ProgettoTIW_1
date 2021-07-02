@@ -74,8 +74,7 @@ public class UserDAO {
 			resultSet = pStatement.executeQuery();
 			
 			if(resultSet.next()) {
-				//if(resultSet.getString("password").equals(password))
-					return new User(resultSet.getString("UserName") , resultSet.getString("Password") , resultSet.getInt("Id"));
+				return new User(resultSet.getString("UserName") , resultSet.getString("Password") , resultSet.getInt("Id"));
 			}	
 		}catch(SQLException e) {
 			throw new SQLException();

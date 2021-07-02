@@ -31,16 +31,16 @@ public class CreatePlaylist extends HttpServlet{
 	private TemplateEngine templateEngine;
 	
 	public void init() {
-		try {
-			ServletContext context = getServletContext();
-			
-			//Initializing the template engine
-			ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(context);
-			templateResolver.setTemplateMode(TemplateMode.HTML);
-			this.templateEngine = new TemplateEngine();
-			this.templateEngine.setTemplateResolver(templateResolver);
-			templateResolver.setSuffix(".html");
-			
+		ServletContext context = getServletContext();
+		
+		//Initializing the template engine
+		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(context);
+		templateResolver.setTemplateMode(TemplateMode.HTML);
+		this.templateEngine = new TemplateEngine();
+		this.templateEngine.setTemplateResolver(templateResolver);
+		templateResolver.setSuffix(".html");
+		
+		try {			
 			//Initializing the connection
 			String driver = context.getInitParameter("dbDriver");
 			String url = context.getInitParameter("dbUrl");

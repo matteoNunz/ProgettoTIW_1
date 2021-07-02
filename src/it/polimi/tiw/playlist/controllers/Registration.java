@@ -43,7 +43,6 @@ public class Registration extends HttpServlet{
 			String url = context.getInitParameter("dbUrl");
 			String user = context.getInitParameter("dbUser");
 			String password = context.getInitParameter("dbPassword");
-			//System.out.println("Driver: " + driver + "\nUrl: " + url + "\nUser: " + user + "\nPassword: " + password);
 			Class.forName(driver);
 			connection = DriverManager.getConnection(url , user , password);
 		} catch (ClassNotFoundException e) {
@@ -53,11 +52,11 @@ public class Registration extends HttpServlet{
 	    }
 	}
 	
-	protected void doGet(HttpServletRequest request , HttpServletResponse response) {
-
+	protected void doGet(HttpServletRequest request , HttpServletResponse response) throws ServletException , IOException{
+		doPost(request , response);
 	}
 	
-	protected void doPost(HttpServletRequest request , HttpServletResponse response) throws ServletException,IOException{
+	protected void doPost(HttpServletRequest request , HttpServletResponse response) throws ServletException , IOException{
 		String userName = request.getParameter("user");
 		String password = request.getParameter("password");
 		
@@ -72,7 +71,6 @@ public class Registration extends HttpServlet{
 			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 			ctx.setVariable("errorMsg", error);
 			templateEngine.process(path, ctx, response.getWriter());
-			//response.sendError(HttpServletResponse.SC_BAD_REQUEST, error);
 			return;
 		}
 		
@@ -95,7 +93,6 @@ public class Registration extends HttpServlet{
 			final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 			ctx.setVariable("errorMsg", error);
 			templateEngine.process(path, ctx, response.getWriter());
-			//response.sendError(HttpServletResponse.SC_BAD_REQUEST, error);
 			return;
 		}
 		

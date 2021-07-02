@@ -178,7 +178,7 @@ public class SongDAO {
 	}
 	
 	/**
-	 * Method that take every song in a playList
+	 * Method that takes every song in a playList
 	 * @param playlistId is the id of the playList the user wants the songs
 	 * @return an array list filled for each song in the playList with id,title and image path
 	 * @throws SQLException
@@ -336,7 +336,7 @@ public class SongDAO {
 			
 			resultSet = pStatement.executeQuery();
 			
-			if(resultSet.next()) {//theoretically always true -> I've just controlled there is a song
+			if(resultSet.next()) {
 				song.setSongTitle(resultSet.getString("song.SongTitle"));
 				song.setAlbumTitle(resultSet.getString("album.Title"));
 				song.setSinger(resultSet.getString("album.Singer"));
@@ -366,7 +366,7 @@ public class SongDAO {
 	}
 
 	/**
-	 * Method that verify if a song (the image name) belongs to a specific user
+	 * Method that verify if an image (the image name) belongs to a specific user
 	 * @param imageName is the name of the song file
 	 * @param userId is the user id
 	 * @return true if the song belongs, false otherwise

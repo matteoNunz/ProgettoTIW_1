@@ -58,13 +58,11 @@ public class CheckLogin extends HttpServlet{
 	
 	
 	public void doPost(HttpServletRequest request , HttpServletResponse response)throws ServletException,IOException{
-		//String userName = StringEscapeUtils.escapeJava(request.getParameter("user"));
-		//String password = StringEscapeUtils.escapeJava(request.getParameter("password"));
 		String userName = request.getParameter("user");
 		String password = request.getParameter("password");
 		String error = "";
 		
-		//check if the parameters are not empty or null
+		//Check if the parameters are not empty or null
 		if(userName == null || password == null || userName.isEmpty() || password.isEmpty())
 			error += "Missing parameters;";
 		
